@@ -21,14 +21,14 @@ GPIO.setup(26, GPIO.OUT, pull_up_down=GPIO.PUD_UP)  #this pin will activate the 
 def gate_status():
 		
 	try:
-			GPIO.wait_for_edge(23, GPIO.RISING)    # this will notify when the gate is closed (hopefuly one time)
-			print "Gate Closed\n"
+		GPIO.wait_for_edge(23, GPIO.RISING)    # this will notify when the gate is closed (hopefuly one time)
+		print "Gate Closed\n"
 	
-			GPIO.wait_for_edge(pinY, GPIO.RISING)  # this will notify when the gate is open 
-			print "Gate Open"
+		GPIO.wait_for_edge(pinY, GPIO.RISING)  # this will notify when the gate is open 
+		print "Gate Open"
 	
-			GPIO.wait_for_edge(pinZ, GPIO.RISING)  # this will notify when the gate  is moving (if possible read previous status, and indicate if opening or closing)
-			print "Gate Moving"
+		GPIO.wait_for_edge(pinZ, GPIO.RISING)  # this will notify when the gate  is moving (if possible read previous status, and indicate if opening or closing)
+		print "Gate Moving"
 		
 	 	
 	
