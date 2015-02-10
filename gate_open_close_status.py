@@ -17,25 +17,90 @@ GPIO.setup(25, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #this pin will monitor for 
 GPIO.setup(26, GPIO.OUT, pull_up_down=GPIO.PUD_UP)  #this pin will activate the relay  to "open" or "lock open" the gate
 
 
+def open():
+	GPIO.output(26,1)
+	time.sleep(0.5)
+	GPIO.output(ledPin,0)
+	
+
+def hold():
+	GPIO.output(ledPin,26)
+	
+	
+key = {'X' : 'open', 'Y' : 'hold'}
+
+
+
+
+
+
 
 def gate_status():
 		
-	try:
+	while True:
 		GPIO.wait_for_edge(23, GPIO.RISING)    # this will notify when the gate is closed (hopefuly one time)
 		print "Gate Closed\n"
 	
-		GPIO.wait_for_edge(pinY, GPIO.RISING)  # this will notify when the gate is open 
+		GPIO.wait_for_edge(24, GPIO.RISING)  # this will notify when the gate is open 
 		print "Gate Open"
 	
-		GPIO.wait_for_edge(pinZ, GPIO.RISING)  # this will notify when the gate  is moving (if possible read previous status, and indicate if opening or closing)
+		GPIO.wait_for_edge(25, GPIO.RISING)  # this will notify when the gate  is moving (if possible read previous status, and indicate if opening or closing)
 		print "Gate Moving"
-		
+
+
 	 	
 	
+
+
+	
+	
+input = raw_input("Type lock to hold gate open. Type open to momentarily open gate.")
+for letter in input:
+			for symbol in key:
+				if key == X:
+					hold()
+				elif key == Y:
+					open()
+				else:
+					time.sleep(0.5)
+			time.sleep(0.5)
 	
 	
 	
-	
-	except KeyboardInterrupt:
-		GPIO.cleanup()   #clean up after ctrl+c exit
+Except KeyboardInterrupt:
+	GPIO.cleanup()   #clean up after ctrl+c exit
 GPIO.cleanup()		# clean up after normal exit 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
