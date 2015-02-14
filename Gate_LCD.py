@@ -30,7 +30,7 @@ lcd_rows = 2
 gpio = MCP.MCP23017()   #sets MCP23017 to default addres on ic2 (0x20)
 
 #initialize LCD variables?
-lcd = LCD.Adafruit_RGBCharLCD(lcd+rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, lcd_columns, lcd_rows, lcd_red, lcd_green, lcd_blue, gpio=gpio)
+lcd = LCD.Adafruit_RGBCharLCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, lcd_columns, lcd_rows, lcd_red, lcd_green, lcd_blue, gpio=gpio)
 
 display= raw=input('enter text to display on LCD: ' )
 lcd.set_backlight(1) #turn on backlight
