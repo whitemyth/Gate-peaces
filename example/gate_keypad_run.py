@@ -4,7 +4,6 @@
 #a script to run for the keypad - this will need "gate_keypad_config.py" in the same folder to work.
 
 from time import sleep
-import gate_keypad_config.py
 
 
 kp = RPi_GPIO.keypad()   # this did have a variable to select the type of keypad but since we do not need to select, I took it out, don't know if that was bad or not.

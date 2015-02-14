@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+from lib.gate import Gate
+
+
+def main():
+    gate = Gate()
+    return gate.run()
+
+if __name__ == '__main__':
+    main()
