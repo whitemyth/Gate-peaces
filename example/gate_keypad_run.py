@@ -13,7 +13,7 @@ def digit():
 	while r==None:   # keeps running until R has a value
 		r - kp.get()
 	return r
-	
+
 print "Please enter your passcode"
 
 d1 = digit()
