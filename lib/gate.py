@@ -55,10 +55,10 @@ class Gate:
         keypad.press_key('#')
 
 
-        db.AccessCode()
-        db.AddCode()
-        db.RemoveCode()
-        db.ListCode()
+        db.access_code()
+        db.add_code()
+        db.remove_code()
+        db.list_code()
 
 
 #class
@@ -162,13 +162,13 @@ class GateMonitor:   # reports the gate status
 
 
 class Database:   #commands to interface with database
-    def AccessCode(self): #defines access code , 4 digits stored in database with name, last access , and acces restrictions
+    def access_code(self): #defines access code , 4 digits stored in database with name, last access , and acces restrictions
 
-    def AddCode(self):  #adds a code to the database
+    def add_code(self):  #adds a code to the database
 
-    def RemoveCode(self): # removes a code form the database
+    def remove_code(self): # removes a code form the database
 
-    def ListCode(self): # lists all codes and users from database
+    def list_code(self): # lists all codes and users from database
 
 
 
