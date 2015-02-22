@@ -1,0 +1,66 @@
+#test for keypad
+
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+
+#gpio pin variables:
+x1 == GPIO 05
+x2 == GPIO 06
+x3 == GPIO 13
+x4 == GPIO 19
+xA == GPIO 26
+xB == GPIO 12
+xC == GPIO 16
+xP == GPIO 20
+
+Gpio.setup(x1, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+Gpio.setup(x2, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+Gpio.setup(x3, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+Gpio.setup(x4, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+Gpio.setup(xA, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+Gpio.setup(xB, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+Gpio.setup(xC, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+Gpio.setup(xP, GPIO.OUT, pull_up_down = GPIO.PUD_UP)
+
+
+while True:
+    if (GPIO.input(x1)==1 and GPIO.input(xA) ==1):
+        print("key 1")
+
+    elif (GPIO.input(x1)==1 and GPIO.input(xB) ==1):
+        print("key 2")
+
+    elif (GPIO.input(x1)==1 and GPIO.input(xC) ==1):
+        print("key 3")
+
+    elif (GPIO.input(x2)==1 and GPIO.input(xA) ==1):
+        print("key 4")
+
+    elif (GPIO.input(x2)==1 and GPIO.input(xB) ==1):
+        print("key 5")
+
+    elif (GPIO.input(x2)==1 and GPIO.input(xC) ==1):
+        print("key 6")
+
+    elif (GPIO.input(x3)==1 and GPIO.input(xA) ==1):
+        print("key 7")
+
+    elif (GPIO.input(x3)==1 and GPIO.input(xB) ==1):
+        print("key 8")
+
+    elif (GPIO.input(x3)==1 and GPIO.input(xC) ==1):
+        print("key 9")
+
+    elif (GPIO.input(x4)==1 and GPIO.input(xA) ==1):
+        print("key 0")
+
+    elif (GPIO.input(x4)==1 and GPIO.input(xB) ==1):
+        print("key *")
+
+    else: (GPIO.input(x4)==1 and GPIO.input(xC) ==1):
+        print("key #")
+
+
+    return
+
+GPIO.cleanup()
