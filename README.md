@@ -1,4 +1,4 @@
-# Gate Pieces
+# Gate Peaces
 
 Seperate pieces of code for the gate system.
 These are parts of the gate system to be put together. 
