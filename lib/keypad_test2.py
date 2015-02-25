@@ -34,8 +34,6 @@ GPIO.setup(c3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #column C
 
 GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #dummy pin to keep code alive - remove later
 
-#input('Press enter to start the test\n Press ctrl+c end the test')
-#print('enter 4 digits')
 
 
 class digit():
@@ -82,20 +80,6 @@ class digit():
 
 
 
-#	def row_1(channel):
-#		if GPIO.input(r1) and GPIO.input(c1):
-#			print("OMFG")
-
-#		if GPIO.input(r1):
-#			print("key1")
-
-
-
-#	def column_a(channel):   #changed pin 14 to variable "ca"
-#		if GPIO.input(c1):
-#			print ("column_a")
-
-
 
 
 
@@ -104,26 +88,6 @@ GPIO.add_event_detect(r1, GPIO.RISING, callback=digit.key, bouncetime=300)
 GPIO.add_event_detect(r2, GPIO.RISING, callback=digit.key, bouncetime=300)
 GPIO.add_event_detect(r3, GPIO.RISING, callback=digit.key, bouncetime=300)
 GPIO.add_event_detect(r4, GPIO.RISING, callback=digit.key, bouncetime=300)
-
-def column(channel):
-	GPIO.add_event_detect(c1, GPIO.RISING, callback=digit.column, bouncetime=300)
-	GPIO.add_event_detect(c2, GPIO.RISING, callback=digit.column, bouncetime=300)
-	GPIO.add_event_detect(c3, GPIO.RISING, callback=digit.column, bouncetime=300)
-
-
-
-
-
-
-
-#GPIO.add_event_detect(r1, GPIO.RISING, callback=digit.row_1, bouncetime=300)
-#GPIO.add_event_detect(r2, GPIO.RISING, callback=digit.row_1, bouncetime=300)
-#GPIO.add_event_detect(r3, GPIO.RISING, callback=digit.row_1, bouncetime=300)
-#GPIO.add_event_detect(r4, GPIO.RISING, callback=digit.row_1, bouncetime=300)
-
-#GPIO.add_event_detect(c1, GPIO.RISING, callback=digit.column_a, bouncetime=300)
-#GPIO.add_event_detect(c2, GPIO.RISING, callback=digit.column_a, bouncetime=300)
-#GPIO.add_event_detect(c3, GPIO.RISING, callback=digit.column_a, bouncetime=300)
 
 
 #dumy code to keep program running
