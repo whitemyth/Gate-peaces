@@ -5,10 +5,11 @@
 #this is a simple start to the lcd commands for the gate - the commands should be able to be put right into one of the other scripts just referencing a setup file similar to this
 
 
-import math
 import time
-import Adafruit_CharLCD as LCD
+
+from lib.LCD_Python2 import Adafruit_CharLCD as LCD
 import Adafruit_GPIO.MCP230xx as MCP
+
 
 #MCP pin layout
 
