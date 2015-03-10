@@ -1,7 +1,4 @@
-#!usr/bin/env python
-# jabTest.py
-#start to jabber bot script
-
+#!usr/bin/env python3
 
 import logging
 
