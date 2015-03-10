@@ -189,17 +189,19 @@ class Database:
 
 
 class Keypad:
+    r1 = 14
+    r2 = 15
+    r3 = 18
+    r4 = 23
+    c1 = 17
+    c2 = 27
+    c3 = 22
+
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
 
         # Pin variables.
-        self.r1 = 14
-        self.r2 = 15
-        self.r3 = 18
-        self.r4 = 23
-        self.c1 = 17
-        self.c2 = 27
-        self.c3 = 22
+
 
         # Set as input and pulled down - connected to 3V3 on button press.
         GPIO.setup(self.r1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Row 1
@@ -210,41 +212,42 @@ class Keypad:
         GPIO.setup(self.c2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Column B
         GPIO.setup(self.c3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Column C
 
-    def key_pressed(self):
-        if GPIO.input(self.r1) and GPIO.input(self.c1):
+    @staticmethod
+    def key_pressed():
+        if GPIO.input(Keypad.r1) and GPIO.input(Keypad.c1):
             print('1')
 
-        if GPIO.input(self.r1) and GPIO.input(self.c2):
+        if GPIO.input(Keypad.r1) and GPIO.input(Keypad.c2):
             print('2')
 
-        if GPIO.input(self.r1) and GPIO.input(self.c3):
+        if GPIO.input(Keypad.r1) and GPIO.input(Keypad.c3):
             print('3')
 
-        if GPIO.input(self.r2) and GPIO.input(self.c1):
+        if GPIO.input(Keypad.r2) and GPIO.input(Keypad.c1):
             print('4')
 
-        if GPIO.input(self.r2) and GPIO.input(self.c2):
+        if GPIO.input(Keypad.r2) and GPIO.input(Keypad.c2):
             print('5')
 
-        if GPIO.input(self.r2) and GPIO.input(self.c3):
+        if GPIO.input(Keypad.r2) and GPIO.input(Keypad.c3):
             print('6')
 
-        if GPIO.input(self.r3) and GPIO.input(self.c1):
+        if GPIO.input(Keypad.r3) and GPIO.input(Keypad.c1):
             print('7')
 
-        if GPIO.input(self.r3) and GPIO.input(self.c2):
+        if GPIO.input(Keypad.r3) and GPIO.input(Keypad.c2):
             print('8')
 
-        if GPIO.input(self.r3) and GPIO.input(self.c3):
+        if GPIO.input(Keypad.r3) and GPIO.input(Keypad.c3):
             print('9')
 
-        if GPIO.input(self.r4) and GPIO.input(self.c1):
+        if GPIO.input(Keypad.r4) and GPIO.input(Keypad.c1):
             print('*')
 
-        if GPIO.input(self.r4) and GPIO.input(self.c2):
+        if GPIO.input(Keypad.r4) and GPIO.input(Keypad.c2):
             print('0')
 
-        if GPIO.input(self.r4) and GPIO.input(self.c3):
+        if GPIO.input(Keypad.r4) and GPIO.input(Keypad.c3):
             print('#')
 
     def listen(self):
