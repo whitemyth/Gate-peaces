@@ -1,6 +1,6 @@
 import time
 from lib.Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
-from RPi.GPIO import GPIO
+import RPi.GPIO as GPIO
 
 
 class Gate:
