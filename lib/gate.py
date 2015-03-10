@@ -1,9 +1,10 @@
-def display_message_function(message):
-    print(message)
+import time
+from lib.Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
 
 
 class Gate:
-    def run(self):
+    @staticmethod
+    def run():
         print('hello world')
 
         # This is where the main program flow will be.
@@ -12,13 +13,8 @@ class Gate:
         # Easy to test means it should be a function/method that receives arguments and returns values that we can
         # confirm true or false.
 
-        display_message_function("hello from the function")
-        self.display_message_method("hello from the method")
-
-        # some objects
         lcd = Lcd()
-        # lcd object
-        talk = JabberBot()
+        bot = JabberBot()
         control = GateControl()
         listen = GateMonitor()
         keypad = Keypad()
@@ -29,8 +25,10 @@ class Gate:
         lcd.valid_code_lcd()
         lcd.invalid_code()
 
-        talk.listen()
-        talk.notify()
+        return 0
+
+        bot.listen()
+        bot.notify()
 
         control.close()
         control.hold_open()
@@ -84,46 +82,42 @@ class Gate:
         # verify code if entered
         # show LCD message "welcome(name)" / " Invalid Code"
 
-        # send notice through jabberbot of attempt, or correct entry of code
+        # send notice through jabber bot of attempt, or correct entry of code
 
 
 class Lcd:
-    # class for LCD modes
-    # idle mode when no keys are being pressed after x amount (probably 30 seconds)
-    def standby(self):
-        LCD.set_color(0.0, 0.0, 0.5)
-        LCD.message("time /n Enter Code")
+    def __init__(self):
+        self.lcd = lcd = Adafruit_CharLCDPlate()
+        lcd.begin(16, 2)
 
-        # what happens as soon as any key is pressed
+    def standby(self):
+        self.lcd.backlight(self.lcd.BLUE)
+        self.lcd.message('Enter Code.')
+        time.sleep(1.0)
 
     def awake(self):
-        LCD.set_color(0.0, 0.0, 1.0)
-        LCD.message([keypad_imput])
-
-        # what happens if a valid code is entered
+        self.lcd.backlight(self.lcd.YELLOW)
+        self.lcd.message('Waking up.')
+        time.sleep(1.0)
 
     def valid_code_lcd(self):
-        LCD.set_color(0.0, 1.0, 0.0)
-        LCD.message("Welcome 'client_name'")
+        self.lcd.backlight(self.lcd.GREEN)
+        self.lcd.message('Welcome sir.')
         time.sleep(5.0)
-        LCD.clear()
+        self.lcd.clear()
 
-    # what happens if an invalid code is entered
     def invalid_code(self):
-        LCD.set_color(1.0, 0.0, 0.0)
-        LCD.message("Invalid Code")
+        self.lcd.backlight(self.lcd.RED)
+        self.lcd.message('Invalid code.')
         time.sleep(3)
-        LCD.clear()
+        self.lcd.clear()
 
 
-# class for jabber bot communication
 class JabberBot:
     def listen(self):
-        # listens for commands from admin
         pass
 
     def notify(self):
-        # provides feedback of gate status to admin
         pass
 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 __author__ = 'Scott'
-#keypad_test2.py
+#keypad.py
 #Secondary thought process to testing the keypad - new code style trial
 
 #import GPIO
