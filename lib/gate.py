@@ -122,7 +122,8 @@ class Lcd:
         self.lcd.clear()
 
     def display(self, message):
-        self.lcd.message('Key pressed: ' + message)
+        self.lcd.clear()
+        self.lcd.message('Code: ' + message)
 
 
 class JabberBot:
@@ -201,6 +202,7 @@ class Keypad:
     c2 = 27
     c3 = 22
     lcd = None
+    buffer = ''
 
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
@@ -214,7 +216,7 @@ class Keypad:
         GPIO.setup(self.c3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Column C
 
     @staticmethod
-    def set_lcd(new_lcd):
+    def set_lcd(new_lcd: Lcd):
         Keypad.lcd = new_lcd
 
     @staticmethod
@@ -248,8 +250,15 @@ class Keypad:
 
         print(the_key)
 
+        if len(Keypad.buffer) < 4:
+            Keypad.buffer += the_key
+
         if Keypad.lcd is not None:
-            Keypad.lcd.display(the_key)
+            Keypad.lcd.display(Keypad.buffer)
+
+        if len(Keypad.buffer) == 4:
+            print('Key entered: ' + Keypad.buffer)
+            Keypad.buffer = ''
 
     def listen(self):
         GPIO.add_event_detect(self.c1, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
