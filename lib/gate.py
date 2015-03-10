@@ -19,6 +19,7 @@ class Gate:
         control = GateControl()
         listen = GateMonitor()
         keypad = Keypad()
+        keypad.set_lcd(lcd)
         db = Database()
 
         lcd.awake()
@@ -120,6 +121,9 @@ class Lcd:
         time.sleep(1)
         self.lcd.clear()
 
+    def display(self, message):
+        self.lcd.message('Key pressed: ' + message)
+
 
 class JabberBot:
     def listen(self):
@@ -196,10 +200,10 @@ class Keypad:
     c1 = 17
     c2 = 27
     c3 = 22
+    lcd = None
 
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
-
         # Set as input and pulled down - connected to 3V3 on button press.
         GPIO.setup(self.r1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Row 1
         GPIO.setup(self.r2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Row 2
@@ -210,42 +214,42 @@ class Keypad:
         GPIO.setup(self.c3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Column C
 
     @staticmethod
+    def set_lcd(new_lcd):
+        Keypad.lcd = new_lcd
+
+    @staticmethod
     def key_pressed(channel):
+        the_key = ''
+
         if GPIO.input(Keypad.r1) and GPIO.input(Keypad.c1):
-            print('1')
+            the_key = '1'
+        elif GPIO.input(Keypad.r1) and GPIO.input(Keypad.c2):
+            the_key = '2'
+        elif GPIO.input(Keypad.r1) and GPIO.input(Keypad.c3):
+            the_key = '3'
+        elif GPIO.input(Keypad.r2) and GPIO.input(Keypad.c1):
+            the_key = '4'
+        elif GPIO.input(Keypad.r2) and GPIO.input(Keypad.c2):
+            the_key = '5'
+        elif GPIO.input(Keypad.r2) and GPIO.input(Keypad.c3):
+            the_key = '6'
+        elif GPIO.input(Keypad.r3) and GPIO.input(Keypad.c1):
+            the_key = '7'
+        elif GPIO.input(Keypad.r3) and GPIO.input(Keypad.c2):
+            the_key = '8'
+        elif GPIO.input(Keypad.r3) and GPIO.input(Keypad.c3):
+            the_key = '9'
+        elif GPIO.input(Keypad.r4) and GPIO.input(Keypad.c1):
+            the_key = '*'
+        elif GPIO.input(Keypad.r4) and GPIO.input(Keypad.c2):
+            the_key = '0'
+        elif GPIO.input(Keypad.r4) and GPIO.input(Keypad.c3):
+            the_key = '#'
 
-        if GPIO.input(Keypad.r1) and GPIO.input(Keypad.c2):
-            print('2')
+        print(the_key)
 
-        if GPIO.input(Keypad.r1) and GPIO.input(Keypad.c3):
-            print('3')
-
-        if GPIO.input(Keypad.r2) and GPIO.input(Keypad.c1):
-            print('4')
-
-        if GPIO.input(Keypad.r2) and GPIO.input(Keypad.c2):
-            print('5')
-
-        if GPIO.input(Keypad.r2) and GPIO.input(Keypad.c3):
-            print('6')
-
-        if GPIO.input(Keypad.r3) and GPIO.input(Keypad.c1):
-            print('7')
-
-        if GPIO.input(Keypad.r3) and GPIO.input(Keypad.c2):
-            print('8')
-
-        if GPIO.input(Keypad.r3) and GPIO.input(Keypad.c3):
-            print('9')
-
-        if GPIO.input(Keypad.r4) and GPIO.input(Keypad.c1):
-            print('*')
-
-        if GPIO.input(Keypad.r4) and GPIO.input(Keypad.c2):
-            print('0')
-
-        if GPIO.input(Keypad.r4) and GPIO.input(Keypad.c3):
-            print('#')
+        if Keypad.lcd is not None:
+            Keypad.lcd.display(the_key)
 
     def listen(self):
         GPIO.add_event_detect(self.c1, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
