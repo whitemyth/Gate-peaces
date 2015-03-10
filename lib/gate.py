@@ -21,9 +21,16 @@ class Gate:
         db = Database()
 
         lcd.awake()
-        lcd.standby()
-        lcd.valid_code_lcd()
-        lcd.invalid_code()
+        # lcd.standby()
+        # lcd.valid_code_lcd()
+        # lcd.invalid_code()
+
+        keypad.listen()
+
+        print('press enter to exit program')
+        input()
+
+        keypad.cleanup()
 
         return 0
 
@@ -93,23 +100,23 @@ class Lcd:
     def standby(self):
         self.lcd.backlight(self.lcd.BLUE)
         self.lcd.message('Enter Code.')
-        time.sleep(1.0)
+        time.sleep(1)
 
     def awake(self):
         self.lcd.backlight(self.lcd.YELLOW)
         self.lcd.message('Waking up.')
-        time.sleep(1.0)
+        time.sleep(1)
 
     def valid_code_lcd(self):
         self.lcd.backlight(self.lcd.GREEN)
         self.lcd.message('Welcome sir.')
-        time.sleep(5.0)
+        time.sleep(1)
         self.lcd.clear()
 
     def invalid_code(self):
         self.lcd.backlight(self.lcd.RED)
         self.lcd.message('Invalid code.')
-        time.sleep(3)
+        time.sleep(1)
         self.lcd.clear()
 
 
@@ -181,5 +188,68 @@ class Database:
 
 
 class Keypad:
-    def press_key(self, key):
-        pass
+    def __init__(self):
+        GPIO.setmode(GPIO.BCM)
+
+        # Pin variables.
+        self.r1 = 14
+        self.r2 = 15
+        self.r3 = 18
+        self.r4 = 23
+        self.c1 = 17
+        self.c2 = 27
+        self.c3 = 22
+
+        # Set as input and pulled down - connected to 3V3 on button press.
+        GPIO.setup(self.r1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Row 1
+        GPIO.setup(self.r2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Row 2
+        GPIO.setup(self.r3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Row 3
+        GPIO.setup(self.r4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Row 4
+        GPIO.setup(self.c1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Column A
+        GPIO.setup(self.c2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Column B
+        GPIO.setup(self.c3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Column C
+
+    def key_pressed(self):
+        if GPIO.input(self.r1) and GPIO.input(self.c1):
+            print('1')
+
+        if GPIO.input(self.r1) and GPIO.input(self.c2):
+            print('2')
+
+        if GPIO.input(self.r1) and GPIO.input(self.c3):
+            print('3')
+
+        if GPIO.input(self.r2) and GPIO.input(self.c1):
+            print('4')
+
+        if GPIO.input(self.r2) and GPIO.input(self.c2):
+            print('5')
+
+        if GPIO.input(self.r2) and GPIO.input(self.c3):
+            print('6')
+
+        if GPIO.input(self.r3) and GPIO.input(self.c1):
+            print('7')
+
+        if GPIO.input(self.r3) and GPIO.input(self.c2):
+            print('8')
+
+        if GPIO.input(self.r3) and GPIO.input(self.c3):
+            print('9')
+
+        if GPIO.input(self.r4) and GPIO.input(self.c1):
+            print('*')
+
+        if GPIO.input(self.r4) and GPIO.input(self.c2):
+            print('0')
+
+        if GPIO.input(self.r4) and GPIO.input(self.c3):
+            print('#')
+
+    def listen(self):
+        GPIO.add_event_detect(self.c1, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+        GPIO.add_event_detect(self.c2, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+        GPIO.add_event_detect(self.c3, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+
+    def cleanup(self):
+        GPIO.cleanup()
