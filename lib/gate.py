@@ -1,5 +1,6 @@
 import time
 from lib.Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
+from RPi.GPIO import GPIO
 
 
 class Gate:
@@ -151,7 +152,7 @@ class GateMonitor:
     GATE_OPENING = 3
 
     def __init__(self):
-        self.gate = self.GATE_IS_CLOSED
+        self.state = self.GATE_IS_CLOSED
 
     def gate_is_open(self):
         if GPIO.input(29, True):
