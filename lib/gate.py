@@ -200,9 +200,6 @@ class Keypad:
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
 
-        # Pin variables.
-
-
         # Set as input and pulled down - connected to 3V3 on button press.
         GPIO.setup(self.r1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Row 1
         GPIO.setup(self.r2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Row 2
@@ -213,7 +210,7 @@ class Keypad:
         GPIO.setup(self.c3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Column C
 
     @staticmethod
-    def key_pressed():
+    def key_pressed(channel):
         if GPIO.input(Keypad.r1) and GPIO.input(Keypad.c1):
             print('1')
 
