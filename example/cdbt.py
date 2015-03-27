@@ -18,12 +18,15 @@ class ClientDatabase:
         self.db.commit()
         print("Records Deleted ", self.db.total_changes)
 
-    def edit(self, name, new_name, new_code, new_restriction):
-        self.db.execute('''UPDATE codes SET(client_name=?, client_code=?, client_restrictions=?)
-        WHERE client_name=?''', (new_name, new_code, new_restriction, name))
+    def edit (self, name, new_name, new_code, new_restriction):
+        self.db.execute('''UPDATE codes SET client_name=?, client_code=?, client_restrictions=? WHERE client_name=?''', (new_name, new_code, new_restriction, name))
+        self.db.commit()
+        print("client updated")
 
     def change_code(self, name, new_code):
-        self.db.execute('''UPDATE codes SET (client_code=?) WHERE client_name=?''', (new_code, name))
+        self.db.execute('''UPDATE codes SET client_code=? WHERE client_name=?''', (new_code, name))
+        self.db.commit()
+        print("code updated")
 
     def list(self):
         cursor = self.db.execute('''SELECT client_name, client_code, client_restrictions FROM codes''')

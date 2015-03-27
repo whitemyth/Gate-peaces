@@ -16,8 +16,9 @@ while ans:
     1.Add a Client
     2.Delete a Client
     3.Edit a client
-    4.Client Report
-    5.Exit/Quit
+    4.Edit Client code
+    5.Client Report
+    6.Exit/Quit
     """)
     client = ClientDatabase()
     ans = input("What would you like to do? ")
@@ -39,21 +40,23 @@ while ans:
         new_restriction = input("please enter the new restriction level for this client")
         client.edit(name, new_name, new_code, new_restriction)
 
-
+    elif ans == "4":
+        name = input("please enter the name of the client who's code you would like to change")
+        new_code = input("please enter new code")
+        client.change_code(name, new_code)
 
 #This section should ask which client you'd like to edit (or possibly which criteria you'd like to
 #search by to edit a client.  it should then ask you to change the information and then confirm before updating.
 
-    elif ans == "4":
-      cursor = db.execute('''SELECT client_name, client_code, client_restrictions FROM codes''')
-      for row in cursor:
-        print ("client_name = ", row[0])
-        print ("client_code = ", row[1])
-        print ("client_restrictions = ", row[2], "\n")
+    elif ans == "5":
+        user_list = client.list()
+        for row in user_list:
+            print("name: " + row[0])
+            print("code: " + str(row[1]))
+            print("restriction: " + row[2] + "\n")
+            print("\n All Clients")
 
-      print("\n All Clients")
-
-    elif ans=="5":
+    elif ans=="6":
       print("\n Goodbye")
       ans =""
     else:
