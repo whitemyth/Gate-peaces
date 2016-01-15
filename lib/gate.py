@@ -3,6 +3,9 @@ from lib.Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
 import RPi.GPIO as GPIO
 #from MCP23017_I2C import *
 from lib.MCP23017_I2C import MCP23017_I2C
+import sqlite3
+
+
 class Gate:
     @staticmethod
     def run():
@@ -97,8 +100,8 @@ class Gate:
 
 class Lcd:
     def __init__(self):
-        self.lcd = lcd = Adafruit_CharLCDPlate()
-        lcd.begin(16, 2)
+        self.lcd = Adafruit_CharLCDPlate()
+        self.lcd.begin(16, 2)
 
     def standby(self):
         self.lcd.backlight(self.lcd.BLUE)
@@ -175,23 +178,39 @@ class GateMonitor:
             self.state = self.GATE_CLOSING
 
 
-class Database:
-    # commands to interface with database
-    def access_code(self):
-        # defines access code, 4 digits stored in database with name, last access, and access restrictions
-        pass
+class ClientDatabase:
+    def __init__(self):
+        self.db = sqlite3.connect("accessCodes.db")
 
-    def add_code(self):
-        # adds a code to the database
-        pass
+    def add(self, name, code, restriction):
+        self.db.execute('''INSERT INTO codes (client_name, client_code, client_restrictions)
+            VALUES(?,?,?)''', (name, code, restriction))
 
-    def remove_code(self):
-        # removes a code form the database
-        pass
+    def delete(self, name):
+        self.db.execute('''DELETE FROM codes WHERE client_name=?''', name)
 
-    def list_code(self):
-        # lists all codes and users from database
-        pass
+    def edit(self, name, new_name, new_code, new_restriction):
+        self.db.execute('''UPDATE codes SET (client_name=?, client_code=?, client_restrictions=?)
+            WHERE client_name=?''', (new_name, new_code, new_restriction, name))
+
+    def change_code(self, name, new_code):
+        self.db.execute('''UPDATE codes SET (client_code=?) WHERE client_name=?''', (new_code, name))
+
+    def list(self):
+        cursor = self.db.execute('''SELECT client_name, client_code, client_restrictions FROM codes''')
+        return cursor.fetchall()
+
+
+# instantiate the class ClientDatabase, create an object of ClientDatabase, the object is called "client"
+# client = ClientDatabase()
+# client.add("Alex", 1234, "Staff")
+# client.delete("Alex")
+# client.edit("Alex", "Alex2", 4321, "Nobody")
+# user_list = client.list()
+# for row in user_list:
+#     print("name: " + row[0])
+#     print("code: " + row[1])
+#     print("restriction: " + row[2] + "\n")
 
 class KeypadI2C:
     r1 = 3
