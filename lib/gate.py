@@ -1,8 +1,8 @@
 import time
 from lib.Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
 import RPi.GPIO as GPIO
-#from MCP23017_I2C import *
-from lib.MCP23017_I2C import MCP23017_I2C
+from lib.MCP23017_I2C import *
+#from lib.MCP23017_I2C import MCP23017_I2C
 import sqlite3
 
 
@@ -23,16 +23,20 @@ class Gate:
         listen = GateMonitor()
         #keypad = Keypad()
         keypad = KeypadI2C()
+        return 0
         keypad.set_lcd(lcd)
-        db = Database()
-
+        #db = Database()
+			#uncoment above later
+			
         lcd.awake()
         # lcd.standby()
         # lcd.valid_code_lcd()
         # lcd.invalid_code()
 
         keypad.listen()
-
+        
+        
+		
         print('press enter to exit program')
         input()
 
@@ -224,15 +228,18 @@ class KeypadI2C:
     buffer = ''
 
     def __init__(self):
-        GPIO_CHIP_1 = GPIO_Chip(0x20, 1) #define and assign chip MCP23017_I2c (0= model, b rev2, or B+ 1= model b rev1)
-        GPIO_CHIP_1.setup(self.r1, 'IN', 'A')
-        GPIO_CHIP_1.setup(self.r2, 'IN', 'A')
-        GPIO_CHIP_1.setup(self.r3, 'IN', 'A')
-        GPIO_CHIP_1.setup(self.r4, 'IN', 'A')
-        GPIO_CHIP_1.setup(self.c1, 'IN', 'B')
-        GPIO_CHIP_1.setup(self.c2, 'IN', 'B')
-        GPIO_CHIP_1.setup(self.c3, 'IN', 'B')
-
+        self.GPIO_CHIP_1 = GPIO_CHIP(0x20, 1) #define and assign chip MCP23017_I2c (0= model, b rev2, or B+ 1= model b rev1)
+        self.GPIO_CHIP_1.setup(self.r1, 'IN', 'A')
+        self.GPIO_CHIP_1.setup(self.r2, 'IN', 'A')
+        self.GPIO_CHIP_1.setup(self.r3, 'IN', 'A')
+        self.GPIO_CHIP_1.setup(self.r4, 'IN', 'A')
+        self.GPIO_CHIP_1.setup(self.c1, 'IN', 'B')
+        self.GPIO_CHIP_1.setup(self.c2, 'IN', 'B')
+        self.GPIO_CHIP_1.setup(self.c3, 'IN', 'B')
+        print('Whinny!')
+        self.GPIO_CHIP_1.input(0, 'A')
+	
+	
     @staticmethod
     def set_lcd(new_lcd: Lcd):
         KeypadI2C.lcd = new_lcd
@@ -241,31 +248,33 @@ class KeypadI2C:
     def key_pressed(channel):
         the_key = ''
 
-        if GPIO_Chip1.input(KeypadI2C.r1) and GPIO_Chip1.input(KeypadI2C.c1):
+        if self.GPIO_CHIP_1.input(KeypadI2C.r1) and self.GPIO_CHIP_1.input(KeypadI2C.c1):
             the_key = '1'
-        elif GPIO_Chip1.input(KeypadI2C.r1) and GPIO_Chip1.input(KeypadI2C.c2):
+        elif self.GPIO_CHIP_1.input(KeypadI2C.r1) and self.GPIO_CHIP_1.input(KeypadI2C.c2):
             the_key = '2'
-        elif GPIO_Chip1.input(KeypadI2C.r1) and GPIO_Chip1.input(KeypadI2C.c3):
+        elif self.GPIO_CHIP_1.input(KeypadI2C.r1) and self.GPIO_CHIP_1.input(KeypadI2C.c3):
             the_key = '3'
-        elif GPIO_Chip1.input(KeypadI2C.r2) and GPIO_Chip1.input(KeypadI2C.c1):
+        elif self.GPIO_CHIP_1.input(KeypadI2C.r2) and self.GPIO_CHIP_1.input(KeypadI2C.c1):
             the_key = '4'
-        elif GPIO_Chip1.input(KeypadI2C.r2) and GPIO_Chip1.input(KeypadI2C.c2):
+        elif self.GPIO_CHIP_1.input(KeypadI2C.r2) and self.GPIO_CHIP_1.input(KeypadI2C.c2):
             the_key = '5'
-        elif GPIO_Chip1.input(KeypadI2C.r2) and GPIO_Chip1.input(KeypadI2C.c3):
+        elif self.GPIO_CHIP_1.input(KeypadI2C.r2) and self.GPIO_CHIP_1.input(KeypadI2C.c3):
             the_key = '6'
-        elif GPIO_Chip1.input(KeypadI2C.r3) and GPIO_Chip1.input(KeypadI2C.c1):
+        elif self.GPIO_CHIP_1.input(KeypadI2C.r3) and self.GPIO_CHIP_1.input(KeypadI2C.c1):
             the_key = '7'
-        elif GPIO_Chip1.input(KeypadI2C.r3) and GPIO_Chip1.input(KeypadI2C.c2):
+        elif self.GPIO_CHIP_1.input(KeypadI2C.r3) and self.GPIO_CHIP_1.input(KeypadI2C.c2):
             the_key = '8'
-        elif GPIO_Chip1.input(KeypadI2C.r3) and GPIO_Chip1.input(KeypadI2C.c3):
+        elif self.GPIO_CHIP_1.input(KeypadI2C.r3) and self.GPIO_CHIP_1.input(KeypadI2C.c3):
             the_key = '9'
-        elif GPIO_Chip1.input(KeypadI2C.r4) and GPIO_Chip1.input(KeypadI2C.c1):
+        elif self.GPIO_CHIP_1.input(KeypadI2C.r4) and self.GPIO_CHIP_1.input(KeypadI2C.c1):
             the_key = '*'
-        elif GPIO_Chip1.input(KeypadI2C.r4) and GPIO_Chip1.input(KeypadI2C.c2):
+        elif self.GPIO_CHIP_1.input(KeypadI2C.r4) and self.GPIO_CHIP_1.input(KeypadI2C.c2):
             the_key = '0'
-        elif GPIO_Chip1.input(KeypadI2C.r4) and GPIO_Chip1.input(KeypadI2C.c3):
+        elif self.GPIO_CHIP_1.input(KeypadI2C.r4) and self.GPIO_CHIP_1.input(KeypadI2C.c3):
             the_key = '#'
-
+    
+	
+	
         print(the_key)
         if len(KeypadI2C.buffer) < 4:
             KeypadI2C.buffer += the_key
@@ -276,8 +285,13 @@ class KeypadI2C:
         if len(KeypadI2C.buffer) == 4:
             print('Key entered: ' + KeypadI2C.buffer)
             KeypadI2C.buffer = ''
+	
+    #def listen(self):
+    #   self.GPIO_CHIP_1.add_event_detect(self.c1, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+    #  self.GPIO_CHIP_1.add_event_detect(self.c2, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+    #    self.GPIO_CHIP_1.add_event_detect(self.c3, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
 
-        def cleanup(self):
+    def cleanup(self):
             GPIO.cleanup()
 
 

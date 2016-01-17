@@ -39,8 +39,8 @@ class GPIO_CHIP:
 		try:
 
 			if (pin<0 or pin>7) or (side!='A' and side!='B') or (io!='IN' and io!='OUT'):
-				print ' --- GPIO.setup(pin, io, side) ---'
-				print ' --- pin (0 - 7)  io (IN or OUT)  side (A or B) ---'
+				print (' --- GPIO.setup(pin, io, side) ---')
+				print (' --- pin (0 - 7)  io (IN or OUT)  side (A or B) ---')
 				return;
 			else:
 
@@ -68,7 +68,7 @@ class GPIO_CHIP:
 			return;
 
 		except:
-			print ' --- Error accessing the chip MCP23017 ---'
+			print (' --- Error accessing the chip MCP23017 ---')
 			raise
 
 
@@ -79,8 +79,8 @@ class GPIO_CHIP:
 		try:
 
 			if (pin<0 or pin>7) or (side!='A' and side!='B') or (hl!=1 and hl!=0):
-				print ' --- GPIO.output(pin, hl, side) ---'
-				print ' --- pin (0 - 7)  hl (0 or 1)  side (A or B) ---'
+				print (' --- GPIO.output(pin, hl, side) ---')
+				print (' --- pin (0 - 7)  hl (0 or 1)  side (A or B) ---')
 				return;
 			else:
 				if hl==1 and side=='A':
@@ -106,7 +106,7 @@ class GPIO_CHIP:
 			return;
 
 		except:
-			print ' --- Error accessing the chip MCP23017 ---'
+			print (' --- Error accessing the chip MCP23017 ---')
 			raise
 
 
@@ -115,8 +115,8 @@ class GPIO_CHIP:
 	# 	pin (0,7)  side (A,B)
 		try:
 			if (pin<0 or pin>7) or (side!='A' and side!='B'):
-				print ' --- MySwitch = GPIO.input(pin, side) ---'
-				print ' --- pin (0 - 7)  side (A or B) ---'
+				print (' --- MySwitch = GPIO.input(pin, side) ---')
+				print (' --- pin (0 - 7)  side (A or B) ---')
 				return;
 			else:
 				if side=='A':
@@ -134,5 +134,5 @@ class GPIO_CHIP:
 
 			return MySwitch;
 		except:
-			print ' --- Error accessing the chip MCP23017 ---'
+			print (' --- Error accessing the chip MCP23017 ---')
 			raise
