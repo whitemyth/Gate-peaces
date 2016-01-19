@@ -23,26 +23,18 @@ class Gate:
         listen = GateMonitor()
         #keypad = Keypad()
         keypad = KeypadI2C()
-        return 0
         keypad.set_lcd(lcd)
         #db = Database()
-			#uncoment above later
-			
+        #uncoment above later
+
         lcd.awake()
         # lcd.standby()
         # lcd.valid_code_lcd()
         # lcd.invalid_code()
 
         keypad.listen()
-        
-        
-		
-        print('press enter to exit program')
-        input()
 
         keypad.cleanup()
-
-        return 0
 
         bot.listen()
         bot.notify()
@@ -236,10 +228,12 @@ class KeypadI2C:
         self.GPIO_CHIP_1.setup(self.c1, 'IN', 'B')
         self.GPIO_CHIP_1.setup(self.c2, 'IN', 'B')
         self.GPIO_CHIP_1.setup(self.c3, 'IN', 'B')
-        print('Whinny!')
+
         self.GPIO_CHIP_1.input(0, 'A')
-	
-	
+        input('push a horse')
+        print('horse pushed')
+        return
+
     @staticmethod
     def set_lcd(new_lcd: Lcd):
         KeypadI2C.lcd = new_lcd
@@ -273,8 +267,6 @@ class KeypadI2C:
         elif self.GPIO_CHIP_1.input(KeypadI2C.r4) and self.GPIO_CHIP_1.input(KeypadI2C.c3):
             the_key = '#'
     
-	
-	
         print(the_key)
         if len(KeypadI2C.buffer) < 4:
             KeypadI2C.buffer += the_key
@@ -285,7 +277,7 @@ class KeypadI2C:
         if len(KeypadI2C.buffer) == 4:
             print('Key entered: ' + KeypadI2C.buffer)
             KeypadI2C.buffer = ''
-	
+
     #def listen(self):
     #   self.GPIO_CHIP_1.add_event_detect(self.c1, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
     #  self.GPIO_CHIP_1.add_event_detect(self.c2, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
