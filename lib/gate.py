@@ -4,6 +4,7 @@ import RPi.GPIO as GPIO
 from lib.MCP23017_I2C import *
 #from lib.MCP23017_I2C import MCP23017_I2C
 import sqlite3
+import sys
 
 
 class Gate:
@@ -232,7 +233,7 @@ class KeypadI2C:
         self.GPIO_CHIP_1.input(0, 'A')
         input('push a horse')
         print('horse pushed')
-        return
+        sys.exit()
 
     @staticmethod
     def set_lcd(new_lcd: Lcd):
