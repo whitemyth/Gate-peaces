@@ -221,7 +221,7 @@ class KeypadI2C:
     buffer = ''
 
     def __init__(self):
-        self.GPIO_CHIP_1 = GPIO_CHIP(0x20, 1) #define and assign chip MCP23017_I2c (0= model, b rev2, or B+ 1= model b rev1)
+        self.GPIO_CHIP_1 = GPIO_CHIP(0x24, 1) # define and assign chip MCP23017_I2c (0= model, b rev2, or B+ 1= model b rev1)
         self.GPIO_CHIP_1.setup(self.r1, 'IN', 'A')
         self.GPIO_CHIP_1.setup(self.r2, 'IN', 'A')
         self.GPIO_CHIP_1.setup(self.r3, 'IN', 'A')
@@ -230,9 +230,14 @@ class KeypadI2C:
         self.GPIO_CHIP_1.setup(self.c2, 'IN', 'B')
         self.GPIO_CHIP_1.setup(self.c3, 'IN', 'B')
 
-        self.GPIO_CHIP_1.input(0, 'A')
         input('push a horse')
-        print('horse pushed')
+        button = self.GPIO_CHIP_1.input(0,'B')
+        #print('0B: ' + button)
+        str(button)
+        
+        if button == '1':
+            print('horse pushed')
+
         sys.exit()
 
     @staticmethod
