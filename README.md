@@ -39,3 +39,8 @@ Run this command to execute all available tests and see if everything works as i
 ```sh
 py.test
 ```
+
+#items installed
+
+sudo pip3 install wiringpi2
+

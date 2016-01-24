@@ -5,7 +5,7 @@ from lib.MCP23017_I2C import *
 #from lib.MCP23017_I2C import MCP23017_I2C
 import sqlite3
 import sys
-
+import smbus
 
 class Gate:
     @staticmethod
@@ -221,15 +221,16 @@ class KeypadI2C:
     buffer = ''
 
     def __init__(self):
-        self.GPIO_CHIP_1 = GPIO_CHIP(0x24, 1) # define and assign chip MCP23017_I2c (0= model, b rev2, or B+ 1= model b rev1)
-        self.GPIO_CHIP_1.setup(self.r1, 'IN', 'A')
-        self.GPIO_CHIP_1.setup(self.r2, 'IN', 'A')
-        self.GPIO_CHIP_1.setup(self.r3, 'IN', 'A')
-        self.GPIO_CHIP_1.setup(self.r4, 'IN', 'A')
-        self.GPIO_CHIP_1.setup(self.c1, 'IN', 'B')
-        self.GPIO_CHIP_1.setup(self.c2, 'IN', 'B')
-        self.GPIO_CHIP_1.setup(self.c3, 'IN', 'B')
-
+        #self.GPIO_CHIP_1 = GPIO_CHIP(0x24, 1) # define and assign chip MCP23017_I2c (0= model, b rev2, or B+ 1= model b rev1)
+        #self.GPIO_CHIP_1.setup(self.r1, 'IN', 'A')
+        #self.GPIO_CHIP_1.setup(self.r2, 'IN', 'A')
+        #self.GPIO_CHIP_1.setup(self.r3, 'IN', 'A')
+        #self.GPIO_CHIP_1.setup(self.r4, 'IN', 'A')
+        #self.GPIO_CHIP_1.setup(self.c1, 'IN', 'B')
+        #self.GPIO_CHIP_1.setup(self.c2, 'IN', 'B')
+        #self.GPIO_CHIP_1.setup(self.c3, 'IN', 'B')
+        self.bus = smbus.SMBus(1)
+        
         input('push a horse')
         button = self.GPIO_CHIP_1.input(0,'B')
         #print('0B: ' + button)
