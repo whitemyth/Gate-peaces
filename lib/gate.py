@@ -254,19 +254,19 @@ class KeypadI2C:
 
     def __init__(self):
         print("setting up keypad...")
-        #self.GPIO_CHIP_1 = GPIO_CHIP(0x24, 1) # define and assign chip MCP23017_I2c (0= model, b rev2, or B+ 1= model b rev1)
-        #self.GPIO_CHIP_1.setup(self.r1, 'IN', 'A')
-        #self.GPIO_CHIP_1.setup(self.r2, 'IN', 'A')
-        #self.GPIO_CHIP_1.setup(self.r3, 'IN', 'A')
-        #self.GPIO_CHIP_1.setup(self.r4, 'IN', 'A')
-        #self.GPIO_CHIP_1.setup(self.c1, 'IN', 'B')
-        #self.GPIO_CHIP_1.setup(self.c2, 'IN', 'B')
-        #self.GPIO_CHIP_1.setup(self.c3, 'IN', 'B')
-        self.bus = smbus.SMBus(1)
+        self.device_address = 0x21
+        self.register = 0x01
         
-        print("A")
+        self.GPIO_CHIP_1 = GPIO_CHIP(0x24, 1) # define and assign chip MCP23017_I2c (0= model, b rev2, or B+ 1= model b rev1)
+        self.GPIO_CHIP_1.setup(self.r1, 'IN', 'A')
+        self.GPIO_CHIP_1.setup(self.r2, 'IN', 'A')
+        self.GPIO_CHIP_1.setup(self.r3, 'IN', 'A')
+        self.GPIO_CHIP_1.setup(self.r4, 'IN', 'A')
+        self.GPIO_CHIP_1.setup(self.c1, 'IN', 'B')
+        self.GPIO_CHIP_1.setup(self.c2, 'IN', 'B')
+        self.GPIO_CHIP_1.setup(self.c3, 'IN', 'B')
+        #self.bus = smbus.SMBus(self.register)
         
-        input('push a horse')
         button = self.GPIO_CHIP_1.input(0,'B')
         #print('0B: ' + button)
         str(button)
@@ -275,6 +275,9 @@ class KeypadI2C:
             print('horse pushed')
 
         sys.exit()
+
+    def collect_digit():
+        
 
     @staticmethod
     def set_lcd(new_lcd: Lcd):
@@ -327,6 +330,11 @@ class KeypadI2C:
 
     def cleanup(self):
             GPIO.cleanup()
+            
+    def listen(self):
+        GPIO.add_event_detect(self.c1, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+        GPIO.add_event_detect(self.c2, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+        GPIO.add_event_detect(self.c3, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
 
 
 class Keypad:
