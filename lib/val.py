@@ -27,8 +27,8 @@ mcp.clear_ints()  # Interrupts need to be cleared initially
 
 def print_interrupt(port):
     """Callback function to be called when an Interrupt occurs."""
+    print("calling interrupt function")
     for pin_flag in mcp.int_flag:
-        print("calling interrupt function")
         print("Interrupt connected to Pin: {}".format(port))
         print("Pin number: {} changed to: {}".format(pin_flag, pins[pin_flag].value))
     mcp.clear_ints()
@@ -42,7 +42,7 @@ GPIO.setup(interrupt, GPIO.IN, GPIO.PUD_UP)  # Set up Pi's pin as input, pull up
 
 # The add_event_detect fuction will call our print_interrupt callback function
 # every time an interrupt gets triggered.
-GPIO.add_event_detect(interrupt, GPIO.FALLING, callback=print_interrupt, bouncetime=10)
+GPIO.add_event_detect(interrupt, GPIO.BOTH, callback=print_interrupt, bouncetime=10)
 
 # The following lines are so the program runs for at least 60 seconds,
 # during that time it will detect any pin interrupt and print out the pin number
