@@ -28,7 +28,7 @@ mcp.clear_ints()  # Interrupts need to be cleared initially
 def print_interrupt(port):
     """Callback function to be called when an Interrupt occurs."""
     for pin_flag in mcp.int_flag:
-		print("calling interrupt function")
+        print("calling interrupt function")
         print("Interrupt connected to Pin: {}".format(port))
         print("Pin number: {} changed to: {}".format(pin_flag, pins[pin_flag].value))
     mcp.clear_ints()
