@@ -5,6 +5,7 @@ import busio
 from digitalio import Direction, Pull
 from RPi import GPIO
 from adafruit_mcp230xx.mcp23017 import MCP23017
+import smbus
 
 i2c = busio.I2C(board.SCL, board.SDA)
 
@@ -24,10 +25,16 @@ mcp.interrupt_configuration = 0x0000  # interrupt on any change
 mcp.io_control = 0x44  # Interrupt as open drain and mirrored
 mcp.clear_ints()  # Interrupts need to be cleared initially
 
+bus = smbus.SMBus(0x21)
+
 
 def print_interrupt(port):
     """Callback function to be called when an Interrupt occurs."""
     print("calling interrupt function")
+    print("Port is", port)
+    output = bus.read_ic2_block_data(0x21, 0x01)
+    print("output:")
+    print(output)
     for pin_flag in mcp.int_flag:
         print("Interrupt connected to Pin: {}".format(port))
         print("Pin number: {} changed to: {}".format(pin_flag, pins[pin_flag].value))
@@ -37,7 +44,7 @@ def print_interrupt(port):
 # connect either interrupt pin to the Raspberry pi's pin 17.
 # They were previously configured as mirrored.
 GPIO.setmode(GPIO.BCM)
-interrupt = 7
+interrupt = 16
 GPIO.setup(interrupt, GPIO.IN, GPIO.PUD_UP)  # Set up Pi's pin as input, pull up
 
 # The add_event_detect fuction will call our print_interrupt callback function
