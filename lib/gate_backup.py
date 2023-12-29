@@ -7,11 +7,6 @@ import sqlite3
 import sys
 import smbus
 
-#new imports
-import board
-import busio
-import adafruit_character_lcd.character_lcd_rgb_i2c as character_lcd
-
 class Gate:
     @staticmethod
     def run():
@@ -24,52 +19,52 @@ class Gate:
         # confirm true or false.
 
         lcd = Lcd()
-        #bot = JabberBot()
-        #control = GateControl()
-        #listen = GateMonitor()
+        bot = JabberBot()
+        control = GateControl()
+        listen = GateMonitor()
         #keypad = Keypad()
-        #keypad = KeypadI2C()
-        #keypad.set_lcd(lcd)
+        keypad = KeypadI2C()
+        keypad.set_lcd(lcd)
         #db = Database()
         #uncoment above later
 
         lcd.awake()
-        lcd.standby()
-        lcd.valid_code_lcd()
-        lcd.invalid_code()
+        # lcd.standby()
+        # lcd.valid_code_lcd()
+        # lcd.invalid_code()
 
-        #keypad.listen()
+        keypad.listen()
 
-        #keypad.cleanup()
+        keypad.cleanup()
 
-        #bot.listen()
-        #bot.notify()
+        bot.listen()
+        bot.notify()
 
-        #control.close()
-        #control.hold_open()
-        #control.open()
+        control.close()
+        control.hold_open()
+        control.open()
 
-        #listen.gate_is_closed()
-        #listen.gate_is_moving()
-        #listen.gate_is_open()
+        listen.gate_is_closed()
+        listen.gate_is_moving()
+        listen.gate_is_open()
 
-        #keypad.press_key('1')
-        #keypad.press_key('2')
-        #keypad.press_key('3')
-        #keypad.press_key('4')
-        #keypad.press_key('5')
-        #keypad.press_key('6')
-        #keypad.press_key('7')
-        #keypad.press_key('8')
-        #keypad.press_key('9')
-        #keypad.press_key('0')
-        #keypad.press_key('*')
-        #keypad.press_key('#')
+        keypad.press_key('1')
+        keypad.press_key('2')
+        keypad.press_key('3')
+        keypad.press_key('4')
+        keypad.press_key('5')
+        keypad.press_key('6')
+        keypad.press_key('7')
+        keypad.press_key('8')
+        keypad.press_key('9')
+        keypad.press_key('0')
+        keypad.press_key('*')
+        keypad.press_key('#')
 
-        #db.access_code()
-        #db.add_code()
-        #db.remove_code()
-        #db.list_code()
+        db.access_code()
+        db.add_code()
+        db.remove_code()
+        db.list_code()
 
         # class
         # method
@@ -101,68 +96,41 @@ class Gate:
 
 
 class Lcd:
-    def __init__(self, n_cols=16, n_rows=2):
-        i2c = busio.I2C(board.SCL, board.SDA)
-        self.n_cols = n_cols
-        self.n_rows = n_rows
-        self.lcd = character_lcd.Character_LCD_RGB_I2C(i2c, self.n_cols, self.n_rows)
-        #self.lcd.color = [100,0,0] #TODO - adjustable?
-        self.default_color = (0,0,100)
-        #self.lcd = Adafruit_CharLCDPlate()
-        #self.lcd.begin(16, 2)
-        
-    def display_message(self, msg, color=None, duration=1, clear=False):
-        self.lcd.clear()
-        self.lcd.color = color or self.default_color
-        self.lcd.message = msg
-        time.sleep(duration)
-        if clear:
-            self.lcd.lcd_clear()
+    def __init__(self):
+        self.lcd = Adafruit_CharLCDPlate()
+        self.lcd.begin(16, 2)
 
     def standby(self):
-        self.display_message("Enter code.", )
-        #self.lcd.backlight(self.lcd.BLUE)
-        #self.lcd.message('Enter Code.')
-        #time.sleep(1)
+        self.lcd.backlight(self.lcd.BLUE)
+        self.lcd.message('Enter Code.')
+        time.sleep(1)
 
     def awake(self):
-        self.display_message("Waking up...")
-        #self.lcd.backlight(self.lcd.YELLOW)
-        #self.lcd.message('Waking up.')
-        #time.sleep(1)
+        self.lcd.backlight(self.lcd.YELLOW)
+        self.lcd.message('Waking up.')
+        time.sleep(1)
 
     def valid_code_lcd(self):
-        self.display_message("Welcome")
-        #self.lcd.backlight(self.lcd.GREEN)
-        #self.lcd.message('Welcome sir.')
-        #time.sleep(1)
+        self.lcd.backlight(self.lcd.GREEN)
+        self.lcd.message('Welcome sir.')
+        time.sleep(1)
         self.lcd.clear()
 
     def invalid_code(self):
-        self.display_message("Invalid code")
-        #self.lcd.backlight(self.lcd.RED)
-        #self.lcd.message('Invalid code.')
-        #time.sleep(1)
+        self.lcd.backlight(self.lcd.RED)
+        self.lcd.message('Invalid code.')
+        time.sleep(1)
         self.lcd.clear()
 
     def display(self, message):
-        self.display_message(f"Code: {message}")
-        #self.lcd.clear()
-        #self.lcd.message('Code: ' + message)
+        self.lcd.clear()
+        self.lcd.message('Code: ' + message)
 
 
 class JabberBot:
     def listen(self):
         pass
 
-    def notify(self):
-        pass
-        
-class TelegramBot:
-    
-    def listen(self):
-        pass
-        
     def notify(self):
         pass
 
