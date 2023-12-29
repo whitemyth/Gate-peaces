@@ -38,7 +38,7 @@ class Gate:
         lcd.valid_code_lcd()
         lcd.invalid_code()
 
-        #keypad.listen()
+        keypad.listen()
 
         #keypad.cleanup()
 
@@ -276,9 +276,6 @@ class KeypadI2C:
 
         sys.exit()
 
-    def collect_digit():
-        
-
     @staticmethod
     def set_lcd(new_lcd: Lcd):
         KeypadI2C.lcd = new_lcd
@@ -323,18 +320,18 @@ class KeypadI2C:
             print('Key entered: ' + KeypadI2C.buffer)
             KeypadI2C.buffer = ''
 
-    #def listen(self):
-    #   self.GPIO_CHIP_1.add_event_detect(self.c1, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
-    #  self.GPIO_CHIP_1.add_event_detect(self.c2, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
-    #    self.GPIO_CHIP_1.add_event_detect(self.c3, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+    def listen(self):
+        self.GPIO_CHIP_1.add_event_detect(self.c1, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+        self.GPIO_CHIP_1.add_event_detect(self.c2, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+        self.GPIO_CHIP_1.add_event_detect(self.c3, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
 
     def cleanup(self):
             GPIO.cleanup()
             
-    def listen(self):
-        GPIO.add_event_detect(self.c1, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
-        GPIO.add_event_detect(self.c2, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
-        GPIO.add_event_detect(self.c3, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+    #def listen(self):
+    #    GPIO.add_event_detect(self.c1, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+    #    GPIO.add_event_detect(self.c2, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+    #    GPIO.add_event_detect(self.c3, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
 
 
 class Keypad:
