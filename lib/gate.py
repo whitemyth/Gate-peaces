@@ -133,7 +133,7 @@ class Lcd:
         self.lcd.message = msg
         time.sleep(duration)
         if clear:
-            self.lcd.lcd_clear()
+            self.lcd.clear()
 
     def standby(self):
         self.display_message("Enter code.", )
