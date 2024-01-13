@@ -1,5 +1,5 @@
 import time
-from lib.Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
+#from lib.Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
 import RPi.GPIO as GPIO
 #from lib.MCP23017_I2C import *
 #from lib.MCP23017_I2C import MCP23017_I2C
@@ -259,7 +259,7 @@ class KeypadI2C:
     lcd = None
     buffer = ''
     
-    def _parse(i):
+    def parse(i):
         for idx in range(16):
             temp = i & 1
             if temp:
@@ -306,7 +306,7 @@ class KeypadI2C:
         interrupt = 16
         GPIO.setup(interrupt, GPIO.IN, GPIO.PUD_UP)  # Set up Pi's pin as input, pull up
         
-        GPIO.add_event_detect(interrupt, GPIO.FALLING, callback = button_press, bouncetime=200)
+        GPIO.add_event_detect(interrupt, GPIO.FALLING, callback = self.button_press, bouncetime=200)
         
         try:
             print("When button is pressed you'll see a message")
