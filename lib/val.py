@@ -7,6 +7,10 @@ from RPi import GPIO
 from adafruit_mcp230xx.mcp23017 import MCP23017
 import smbus
 
+output_map = {
+    
+}
+
 i2c = busio.I2C(board.SCL, board.SDA)
 
 mcp = MCP23017(i2c, address=0x21)
@@ -30,25 +34,33 @@ bus = smbus.SMBus(1)
 def setup():
     GPIO.add_event_detect(interrupt, GPIO.FALLING, callback = print_interrupt, bouncetime=100)
 
-def decode_button_press(value):
-    a = value >> 4
-    b = value % 32
-    print(a,b)
+def handle_bottom_row(col):
+    if col == 1:
+        return 0
+    else:
+        pass #clear screen or whatever
+    return -1
 
 
 def print_interrupt(port):
     """Callback function to be called when an Interrupt occurs."""
     sleep(0.1)
     output = bus.read_i2c_block_data(0x21, 0x01)
-    print(decode_button_press(output[17]))
-    #print("output:")
-    #print(output)
+    row = pins[mcp.int_flag[0]]
+    if not row.value:
+        print("Release")
+    else:
+        col = pins[mcp.int_flag[1]]
+        if row == 3:
+            num = handle_bottom_row(col)
+        else:
+            num = (row - 4) * 3 + (3 - col)
+        print(num)
     #for pin_flag in mcp.int_flag:
     #    print("Interrupt connected to Pin: {}".format(port))
     #    print("Pin number: {} changed to: {}".format(pin_flag, pins[pin_flag].value))
     mcp.clear_ints()
     sleep(0.1)
-    setup()
 
 
 # connect either interrupt pin to the Raspberry pi's pin 17.
