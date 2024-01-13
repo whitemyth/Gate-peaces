@@ -6,10 +6,7 @@ from digitalio import Direction, Pull
 from RPi import GPIO
 from adafruit_mcp230xx.mcp23017 import MCP23017
 import smbus
-
-output_map = {
-    
-}
+import numpy as np
 
 i2c = busio.I2C(board.SCL, board.SDA)
 
@@ -47,7 +44,7 @@ def print_interrupt(port):
     sleep(0.1)
     output = bus.read_i2c_block_data(0x21, 0x01)
     
-    print(output)
+    print(int(np.log2(output[13])))
         
     #row = pins[mcp.int_flag[0]]
     #if not row.value:
@@ -59,9 +56,9 @@ def print_interrupt(port):
     #    else:
     #        num = (row - 4) * 3 + (3 - col)
     #    print(num)
-    for pin_flag in mcp.int_flag:
-        print("Interrupt connected to Pin: {}".format(port))
-        print("Pin number: {} changed to: {}".format(pin_flag, pins[pin_flag].value))
+    #for pin_flag in mcp.int_flag:
+    #    print("Interrupt connected to Pin: {}".format(port))
+    #    print("Pin number: {} changed to: {}".format(pin_flag, pins[pin_flag].value))
     
     #vals = []
     #for i, pin in enumerate(pins[0:7]):
