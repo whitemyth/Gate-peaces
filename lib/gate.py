@@ -86,6 +86,16 @@ class Gate:
         # control.open()  calling a method
         
         #testing loop
+        
+        print("testing")
+        
+        sleep(10)
+        
+        print("done")
+        
+        GPIO.cleanup()
+        
+        
         try:
             print("When button is pressed you'll see a message")
             sleep(20)  # You could run your main while loop here.
