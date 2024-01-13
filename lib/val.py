@@ -68,6 +68,8 @@ def print_interrupt(port):
     for pin_flag in mcp.int_flag:
         print("Interrupt connected to Pin: {}".format(port))
         print("Pin number: {} changed to: {}".format(pin_flag, pins[pin_flag].value))
+    for pin in pins:
+        print(pin, pin.value)
     mcp.clear_ints()
     sleep(0.1)
 
