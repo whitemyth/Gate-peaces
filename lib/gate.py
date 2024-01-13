@@ -284,7 +284,7 @@ class KeypadI2C:
         else:
             num = self.parse(output[13])
             print(num)
-            self.lcd.display_message(num)
+            self.lcd.display_message(str(num))
             sleep(1)
             self.lcd.clear()
         self.mcp.clear_ints()
