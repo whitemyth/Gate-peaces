@@ -28,14 +28,14 @@ class Gate:
         # Easy to test means it should be a function/method that receives arguments and returns values that we can
         # confirm true or false.
 
-        lcd = Lcd()
+        ##lcd = Lcd()
         #bot = JabberBot()
         #control = GateControl()
         #listen = GateMonitor()
         #keypad = Keypad()
         
         keypad = KeypadI2C()
-        keypad.set_lcd(lcd)
+        ##keypad.set_lcd(lcd)
         
         #db = Database()
         #uncoment above later
@@ -45,7 +45,7 @@ class Gate:
         #lcd.valid_code_lcd()
         #lcd.invalid_code()
 
-        keypad.listen()
+        ##keypad.listen()
 
         #keypad.cleanup()
 
