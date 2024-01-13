@@ -37,7 +37,9 @@ class Gate:
         keypad = KeypadI2C()
         keypad.set_lcd(lcd)
         
-        #db.add("Chief", "1234")
+        db = ClientDatabase()
+        
+        db.add("Nanuk", "0123")
         #uncoment above later
 
         lcd.awake()
