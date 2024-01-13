@@ -152,14 +152,14 @@ class Lcd:
         #self.lcd.backlight(self.lcd.GREEN)
         #self.lcd.message('Welcome sir.')
         #time.sleep(1)
-        self.lcd.clear()
+        #self.lcd.clear()
 
     def invalid_code(self):
         self.display_message("Invalid code")
         #self.lcd.backlight(self.lcd.RED)
         #self.lcd.message('Invalid code.')
         #time.sleep(1)
-        self.lcd.clear()
+        #self.lcd.clear()
 
     def display(self, message):
         self.display_message(f"Code: {message}")
@@ -284,9 +284,8 @@ class KeypadI2C:
         else:
             num = self.parse(output[13])
             print(num)
-            self.lcd.display_message(str(num))
-            sleep(1)
-            self.lcd.clear()
+            self.lcd.display_message(str(num), clear=True)
+            #sleep(1)
         self.mcp.clear_ints()
         sleep(0.1)
 
