@@ -6,7 +6,6 @@ from digitalio import Direction, Pull
 from RPi import GPIO
 from adafruit_mcp230xx.mcp23017 import MCP23017
 import smbus
-import numpy as np
 
 i2c = busio.I2C(board.SCL, board.SDA)
 
@@ -29,7 +28,7 @@ mcp.clear_ints()  # Interrupts need to be cleared initially
 bus = smbus.SMBus(1)
 
 def setup():
-    GPIO.add_event_detect(interrupt, GPIO.FALLING, callback = print_interrupt, bouncetime=100)
+    GPIO.add_event_detect(interrupt, GPIO.FALLING, callback = print_interrupt, bouncetime=200)
 
 def handle_bottom_row(col):
     if col == 1:
@@ -37,6 +36,14 @@ def handle_bottom_row(col):
     else:
         pass #clear screen or whatever
     return -1
+    
+def parse(i):
+    for idx in range(16):
+        temp = i & 1
+        if temp:
+            return idx
+        i = i >> 1
+    return None
 
 
 def print_interrupt(port):
@@ -47,7 +54,8 @@ def print_interrupt(port):
     if output[15] == 240:
         print("Release")
     else:
-        print(int(np.log2(output[13])))
+        print(parse(output[13]))
+        #print(int(np.log2(output[13])))
         
     #row = pins[mcp.int_flag[0]]
     #if not row.value:

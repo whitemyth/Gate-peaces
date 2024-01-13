@@ -1,7 +1,7 @@
 import time
 from lib.Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
 import RPi.GPIO as GPIO
-from lib.MCP23017_I2C import *
+#from lib.MCP23017_I2C import *
 #from lib.MCP23017_I2C import MCP23017_I2C
 import sqlite3
 import sys
@@ -11,6 +11,11 @@ import smbus
 import board
 import busio
 import adafruit_character_lcd.character_lcd_rgb_i2c as character_lcd
+
+#for the keypad
+from time import sleep
+from digitalio import Direction, Pull
+from adafruit_mcp230xx.mcp23017 import MCP23017
 
 class Gate:
     @staticmethod
@@ -28,15 +33,17 @@ class Gate:
         #control = GateControl()
         #listen = GateMonitor()
         #keypad = Keypad()
+        
         keypad = KeypadI2C()
         keypad.set_lcd(lcd)
+        
         #db = Database()
         #uncoment above later
 
-        lcd.awake()
-        lcd.standby()
-        lcd.valid_code_lcd()
-        lcd.invalid_code()
+        #lcd.awake()
+        #lcd.standby()
+        #lcd.valid_code_lcd()
+        #lcd.invalid_code()
 
         keypad.listen()
 
@@ -251,28 +258,84 @@ class KeypadI2C:
     c3 = 2
     lcd = None
     buffer = ''
+    
+    def _parse(i):
+        for idx in range(16):
+            temp = i & 1
+            if temp:
+                return idx
+            i = i >> 1
+        return None
+        
+    def button_press(self, port):
+        sleep(0.1)
+        output = self.bus.read_i2c_block_data(0x21, 0x01)
+        if output[15] == 240:
+            print("Release")
+        else:
+            print(parse(output[13]))
+        self.mcp.clear_ints()
+        sleep(0.1)
 
     def __init__(self):
         print("setting up keypad...")
-        self.device_address = 0x21
-        self.register = 0x01
+        #self.device_address = 0x21
+        #self.register = 0x01
         
-        self.GPIO_CHIP_1 = GPIO_CHIP(0x24, 1) # define and assign chip MCP23017_I2c (0= model, b rev2, or B+ 1= model b rev1)
-        self.GPIO_CHIP_1.setup(self.r1, 'IN', 'A')
-        self.GPIO_CHIP_1.setup(self.r2, 'IN', 'A')
-        self.GPIO_CHIP_1.setup(self.r3, 'IN', 'A')
-        self.GPIO_CHIP_1.setup(self.r4, 'IN', 'A')
-        self.GPIO_CHIP_1.setup(self.c1, 'IN', 'B')
-        self.GPIO_CHIP_1.setup(self.c2, 'IN', 'B')
-        self.GPIO_CHIP_1.setup(self.c3, 'IN', 'B')
+        self.i2c = busio.I2C(board.SCL, board.SDA)
+        self.mcp = MCP23017(self.i2c, address=0x21)
+        
+        pins = []
+        for pin in range(0, 16):
+            pins.append(self.mcp.get_pin(pin))
+
+        for pin in pins:
+            pin.direction = Direction.INPUT
+            pin.pull = Pull.UP
+
+        self.mcp.interrupt_enable = 0xFFFF  # Enable Interrupts in all pins
+
+        self.mcp.interrupt_configuration = 0x0000  # interrupt on any change
+        self.mcp.io_control = 0x44  # Interrupt as open drain and mirrored
+        self.mcp.clear_ints()  # Interrupts need to be cleared initially
+
+        self.bus = smbus.SMBus(1)
+        
+        GPIO.setmode(GPIO.BCM)
+        
+        interrupt = 16
+        GPIO.setup(interrupt, GPIO.IN, GPIO.PUD_UP)  # Set up Pi's pin as input, pull up
+        
+        GPIO.add_event_detect(interrupt, GPIO.FALLING, callback = button_press, bouncetime=200)
+        
+        try:
+            print("When button is pressed you'll see a message")
+            sleep(20)  # You could run your main while loop here.
+            print("Time's up. Finished!")
+        finally:
+            GPIO.cleanup()
+    
+        
+        #self.GPIO_CHIP_1 = GPIO_CHIP(0x24, 1) # define and assign chip MCP23017_I2c (0= model, b rev2, or B+ 1= model b rev1)
+        #for pin_num in range(6):
+        #    self.GPIO_CHIP_1.setup(pin_num, "IN", "A")
+        
+        #self.GPIO_CHIP_1.setup(self.r1, 'IN', 'A')
+        #self.GPIO_CHIP_1.setup(self.r2, 'IN', 'A')
+        #self.GPIO_CHIP_1.setup(self.r3, 'IN', 'A')
+        #self.GPIO_CHIP_1.setup(self.r4, 'IN', 'A')
+        #self.GPIO_CHIP_1.setup(self.c1, 'IN', 'A')
+        #self.GPIO_CHIP_1.setup(self.c2, 'IN', 'A')
+        #self.GPIO_CHIP_1.setup(self.c3, 'IN', 'A')
+        
         #self.bus = smbus.SMBus(self.register)
         
-        button = self.GPIO_CHIP_1.input(0,'B')
+        #button = self.GPIO_CHIP_1.input(0,'B')
         #print('0B: ' + button)
-        str(button)
+        #str(button)
         
-        if button == '1':
-            print('horse pushed')
+        #if button == '1':
+        #    print('horse pushed')
 
         sys.exit()
 
