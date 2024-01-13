@@ -37,7 +37,7 @@ class Gate:
         keypad = KeypadI2C()
         keypad.set_lcd(lcd)
         
-        #db = Database()
+        db = Database()
         #uncoment above later
 
         lcd.awake()
@@ -127,7 +127,7 @@ class Lcd:
         #self.lcd = Adafruit_CharLCDPlate()
         #self.lcd.begin(16, 2)
         
-    def display_message(self, msg, color=None, duration=1, clear=False):
+    def display_message(self, msg, color=None, duration=1, clear=True):
         self.lcd.clear()
         self.lcd.color = color or self.default_color
         self.lcd.message = msg
@@ -288,16 +288,12 @@ class KeypadI2C:
                 print("send code")
                 self.buffer = ""
                 self.lcd.valid_code_lcd()
-            
-            #sleep(1)
         self.mcp.clear_ints()
         sleep(0.1)
 
     def __init__(self):
         print("setting up keypad...")
         self.buffer = ""
-        #self.device_address = 0x21
-        #self.register = 0x01
         
         self.i2c = busio.I2C(board.SCL, board.SDA)
         self.mcp = MCP23017(self.i2c, address=0x21)
@@ -311,11 +307,9 @@ class KeypadI2C:
             pin.pull = Pull.UP
 
         self.mcp.interrupt_enable = 0xFFFF  # Enable Interrupts in all pins
-
         self.mcp.interrupt_configuration = 0x0000  # interrupt on any change
         self.mcp.io_control = 0x44  # Interrupt as open drain and mirrored
         self.mcp.clear_ints()  # Interrupts need to be cleared initially
-
         self.bus = smbus.SMBus(1)
         
         GPIO.setmode(GPIO.BCM)
@@ -324,160 +318,9 @@ class KeypadI2C:
         GPIO.setup(interrupt, GPIO.IN, GPIO.PUD_UP)  # Set up Pi's pin as input, pull up
         
         GPIO.add_event_detect(interrupt, GPIO.FALLING, callback = self.button_press, bouncetime=200)
-    
-        
-        #self.GPIO_CHIP_1 = GPIO_CHIP(0x24, 1) # define and assign chip MCP23017_I2c (0= model, b rev2, or B+ 1= model b rev1)
-        #for pin_num in range(6):
-        #    self.GPIO_CHIP_1.setup(pin_num, "IN", "A")
-        
-        #self.GPIO_CHIP_1.setup(self.r1, 'IN', 'A')
-        #self.GPIO_CHIP_1.setup(self.r2, 'IN', 'A')
-        #self.GPIO_CHIP_1.setup(self.r3, 'IN', 'A')
-        #self.GPIO_CHIP_1.setup(self.r4, 'IN', 'A')
-        #self.GPIO_CHIP_1.setup(self.c1, 'IN', 'A')
-        #self.GPIO_CHIP_1.setup(self.c2, 'IN', 'A')
-        #self.GPIO_CHIP_1.setup(self.c3, 'IN', 'A')
-        
-        #self.bus = smbus.SMBus(self.register)
-        
-        #button = self.GPIO_CHIP_1.input(0,'B')
-        #print('0B: ' + button)
-        #str(button)
-        
-        #if button == '1':
-        #    print('horse pushed')
 
-        #sys.exit()
-
-    @staticmethod
-    def set_lcd(new_lcd: Lcd):
-        KeypadI2C.lcd = new_lcd
-
-    @staticmethod
-    def key_pressed(channel):
-        the_key = ''
-
-        if self.GPIO_CHIP_1.input(KeypadI2C.r1) and self.GPIO_CHIP_1.input(KeypadI2C.c1):
-            the_key = '1'
-        elif self.GPIO_CHIP_1.input(KeypadI2C.r1) and self.GPIO_CHIP_1.input(KeypadI2C.c2):
-            the_key = '2'
-        elif self.GPIO_CHIP_1.input(KeypadI2C.r1) and self.GPIO_CHIP_1.input(KeypadI2C.c3):
-            the_key = '3'
-        elif self.GPIO_CHIP_1.input(KeypadI2C.r2) and self.GPIO_CHIP_1.input(KeypadI2C.c1):
-            the_key = '4'
-        elif self.GPIO_CHIP_1.input(KeypadI2C.r2) and self.GPIO_CHIP_1.input(KeypadI2C.c2):
-            the_key = '5'
-        elif self.GPIO_CHIP_1.input(KeypadI2C.r2) and self.GPIO_CHIP_1.input(KeypadI2C.c3):
-            the_key = '6'
-        elif self.GPIO_CHIP_1.input(KeypadI2C.r3) and self.GPIO_CHIP_1.input(KeypadI2C.c1):
-            the_key = '7'
-        elif self.GPIO_CHIP_1.input(KeypadI2C.r3) and self.GPIO_CHIP_1.input(KeypadI2C.c2):
-            the_key = '8'
-        elif self.GPIO_CHIP_1.input(KeypadI2C.r3) and self.GPIO_CHIP_1.input(KeypadI2C.c3):
-            the_key = '9'
-        elif self.GPIO_CHIP_1.input(KeypadI2C.r4) and self.GPIO_CHIP_1.input(KeypadI2C.c1):
-            the_key = '*'
-        elif self.GPIO_CHIP_1.input(KeypadI2C.r4) and self.GPIO_CHIP_1.input(KeypadI2C.c2):
-            the_key = '0'
-        elif self.GPIO_CHIP_1.input(KeypadI2C.r4) and self.GPIO_CHIP_1.input(KeypadI2C.c3):
-            the_key = '#'
-    
-        print(the_key)
-        if len(KeypadI2C.buffer) < 4:
-            KeypadI2C.buffer += the_key
-
-        if KeypadI2C.lcd is not None:
-            KeypadI2C.lcd.display(KeypadI2C.buffer)
-
-        if len(KeypadI2C.buffer) == 4:
-            print('Key entered: ' + KeypadI2C.buffer)
-            KeypadI2C.buffer = ''
-
-    #def listen(self):
-    #    self.GPIO_CHIP_1.add_event_detect(self.c1, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
-    #    self.GPIO_CHIP_1.add_event_detect(self.c2, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
-    #    self.GPIO_CHIP_1.add_event_detect(self.c3, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+    def set_lcd(self, new_lcd):
+        self.lcd = new_lcd
 
     def cleanup(self):
             GPIO.cleanup()
-            
-    #def listen(self):
-    #    GPIO.add_event_detect(self.c1, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
-    #    GPIO.add_event_detect(self.c2, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
-    #    GPIO.add_event_detect(self.c3, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
-
-
-class Keypad:
-    r1 = 14
-    r2 = 15
-    r3 = 18
-    r4 = 23
-    c1 = 17
-    c2 = 27
-    c3 = 22
-    lcd = None
-    buffer = ''
-
-    def __init__(self):
-        GPIO.setmode(GPIO.BCM)
-        # Set as input and pulled down - connected to 3V3 on button press.
-        GPIO.setup(self.r1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Row 1
-        GPIO.setup(self.r2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Row 2
-        GPIO.setup(self.r3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Row 3
-        GPIO.setup(self.r4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Row 4
-        GPIO.setup(self.c1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Column A
-        GPIO.setup(self.c2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Column B
-        GPIO.setup(self.c3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Column C
-
-    @staticmethod
-    def set_lcd(new_lcd: Lcd):
-        Keypad.lcd = new_lcd
-
-    @staticmethod
-    def key_pressed(channel):
-        the_key = ''
-
-        if GPIO.input(Keypad.r1) and GPIO.input(Keypad.c1):
-            the_key = '1'
-        elif GPIO.input(Keypad.r1) and GPIO.input(Keypad.c2):
-            the_key = '2'
-        elif GPIO.input(Keypad.r1) and GPIO.input(Keypad.c3):
-            the_key = '3'
-        elif GPIO.input(Keypad.r2) and GPIO.input(Keypad.c1):
-            the_key = '4'
-        elif GPIO.input(Keypad.r2) and GPIO.input(Keypad.c2):
-            the_key = '5'
-        elif GPIO.input(Keypad.r2) and GPIO.input(Keypad.c3):
-            the_key = '6'
-        elif GPIO.input(Keypad.r3) and GPIO.input(Keypad.c1):
-            the_key = '7'
-        elif GPIO.input(Keypad.r3) and GPIO.input(Keypad.c2):
-            the_key = '8'
-        elif GPIO.input(Keypad.r3) and GPIO.input(Keypad.c3):
-            the_key = '9'
-        elif GPIO.input(Keypad.r4) and GPIO.input(Keypad.c1):
-            the_key = '*'
-        elif GPIO.input(Keypad.r4) and GPIO.input(Keypad.c2):
-            the_key = '0'
-        elif GPIO.input(Keypad.r4) and GPIO.input(Keypad.c3):
-            the_key = '#'
-
-        print(the_key)
-
-        if len(Keypad.buffer) < 4:
-            Keypad.buffer += the_key
-
-        if Keypad.lcd is not None:
-            Keypad.lcd.display(Keypad.buffer)
-
-        if len(Keypad.buffer) == 4:
-            print('Key entered: ' + Keypad.buffer)
-            Keypad.buffer = ''
-
-    def listen(self):
-        GPIO.add_event_detect(self.c1, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
-        GPIO.add_event_detect(self.c2, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
-        GPIO.add_event_detect(self.c3, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
-
-    def cleanup(self):
-        GPIO.cleanup()
