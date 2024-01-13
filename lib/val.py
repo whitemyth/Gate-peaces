@@ -46,6 +46,11 @@ def print_interrupt(port):
     """Callback function to be called when an Interrupt occurs."""
     sleep(0.1)
     output = bus.read_i2c_block_data(0x21, 0x01)
+    
+    for pin_flag in mcp.int_flag:
+        print("Interrupt connected to Pin: {}".format(port))
+        print("Pin number: {} changed to: {}".format(pin_flag, pins[pin_flag].value))
+    
     row = pins[mcp.int_flag[0]]
     if not row.value:
         print("Release")
