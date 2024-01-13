@@ -232,7 +232,7 @@ class ClientDatabase:
         #check that the code is in the db, and return the associated name
         self.db.execute(
             """SELECT * FROM codes WHERE client_code=?""",
-            code
+            (code, )
         )
         results = cursor.fetchall()
         print("Got", len(results), "result(s):")
