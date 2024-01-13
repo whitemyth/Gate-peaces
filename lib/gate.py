@@ -28,22 +28,22 @@ class Gate:
         # Easy to test means it should be a function/method that receives arguments and returns values that we can
         # confirm true or false.
 
-        ##lcd = Lcd()
+        lcd = Lcd()
         #bot = JabberBot()
         #control = GateControl()
         #listen = GateMonitor()
         #keypad = Keypad()
         
-        keypad = KeypadI2C()
+        #keypad = KeypadI2C()
         ##keypad.set_lcd(lcd)
         
         #db = Database()
         #uncoment above later
 
-        #lcd.awake()
-        #lcd.standby()
-        #lcd.valid_code_lcd()
-        #lcd.invalid_code()
+        lcd.awake()
+        lcd.standby()
+        lcd.valid_code_lcd()
+        lcd.invalid_code()
 
         ##keypad.listen()
 
@@ -383,10 +383,10 @@ class KeypadI2C:
             print('Key entered: ' + KeypadI2C.buffer)
             KeypadI2C.buffer = ''
 
-    def listen(self):
-        self.GPIO_CHIP_1.add_event_detect(self.c1, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
-        self.GPIO_CHIP_1.add_event_detect(self.c2, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
-        self.GPIO_CHIP_1.add_event_detect(self.c3, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+    #def listen(self):
+    #    self.GPIO_CHIP_1.add_event_detect(self.c1, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+    #    self.GPIO_CHIP_1.add_event_detect(self.c2, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
+    #    self.GPIO_CHIP_1.add_event_detect(self.c3, GPIO.RISING, callback=self.key_pressed, bouncetime=300)
 
     def cleanup(self):
             GPIO.cleanup()
