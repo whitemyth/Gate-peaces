@@ -259,7 +259,7 @@ class KeypadI2C:
     lcd = None
     buffer = ''
     
-    def parse(i):
+    def self.parse(i):
         for idx in range(16):
             temp = i & 1
             if temp:
@@ -273,7 +273,7 @@ class KeypadI2C:
         if output[15] == 240:
             print("Release")
         else:
-            print(parse(output[13]))
+            print(self.parse(output[13]))
         self.mcp.clear_ints()
         sleep(0.1)
 
