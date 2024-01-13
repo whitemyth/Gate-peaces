@@ -259,7 +259,7 @@ class KeypadI2C:
     lcd = None
     buffer = ''
     
-    def self.parse(i):
+    def parse(i):
         for idx in range(16):
             temp = i & 1
             if temp:
