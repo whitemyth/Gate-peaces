@@ -45,15 +45,9 @@ def handle_bottom_row(col):
 def print_interrupt(port):
     """Callback function to be called when an Interrupt occurs."""
     sleep(0.1)
-    output = bus.read_i2c_block_data(0x21, 0x01)
+    #output = bus.read_i2c_block_data(0x21, 0x01)
     
-    print(output[17])
-    
-    print(mcp.int_flag)
-    
-    for pin_flag in mcp.int_flag:
-        print("Interrupt connected to Pin: {}".format(port))
-        print("Pin number: {} changed to: {}".format(pin_flag, pins[pin_flag].value))
+    #print(output[17])
     
     #row = pins[mcp.int_flag[0]]
     #if not row.value:
@@ -65,11 +59,20 @@ def print_interrupt(port):
     #    else:
     #        num = (row - 4) * 3 + (3 - col)
     #    print(num)
-    for pin_flag in mcp.int_flag:
-        print("Interrupt connected to Pin: {}".format(port))
-        print("Pin number: {} changed to: {}".format(pin_flag, pins[pin_flag].value))
-    for pin in pins:
-        print(pin, pin.value)
+    #for pin_flag in mcp.int_flag:
+    #    print("Interrupt connected to Pin: {}".format(port))
+    #    print("Pin number: {} changed to: {}".format(pin_flag, pins[pin_flag].value))
+    
+    vals = []
+    for i, pin in enumerate(pins[0:7]):
+        if pin.value:
+            vals.append(i)
+    if len(vals) > 0:
+        row = vals[0]
+        col = vals[1]
+        print(row, col)
+    else:
+        pass
     mcp.clear_ints()
     sleep(0.1)
 
