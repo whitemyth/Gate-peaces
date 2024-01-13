@@ -34,11 +34,8 @@ class Gate:
         #listen = GateMonitor()
         #keypad = Keypad()
         
-        db = ClientDatabase()
-        
         keypad = KeypadI2C()
         keypad.set_lcd(lcd)
-        keypad.set_db(db)
         
         #db.add("Chief", "1234")
         #uncoment above later
@@ -96,7 +93,6 @@ class Gate:
             print("Time's up. Finished!")
         finally:
             GPIO.cleanup()
-            db.close()
 
         return 0
 
@@ -312,6 +308,8 @@ class KeypadI2C:
     def __init__(self):
         print("setting up keypad...")
         self.buffer = ""
+        
+        self.db = ClientDatabase()
         
         self.i2c = busio.I2C(board.SCL, board.SDA)
         self.mcp = MCP23017(self.i2c, address=0x21)
