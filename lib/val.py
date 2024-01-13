@@ -47,7 +47,7 @@ def print_interrupt(port):
     sleep(0.1)
     output = bus.read_i2c_block_data(0x21, 0x01)
     
-    print(output)
+    print(output[17])
     
     print(mcp.int_flag)
     
@@ -55,19 +55,19 @@ def print_interrupt(port):
         print("Interrupt connected to Pin: {}".format(port))
         print("Pin number: {} changed to: {}".format(pin_flag, pins[pin_flag].value))
     
-    row = pins[mcp.int_flag[0]]
-    if not row.value:
-        print("Release")
-    else:
-        col = pins[mcp.int_flag[1]]
-        if row == 3:
-            num = handle_bottom_row(col)
-        else:
-            num = (row - 4) * 3 + (3 - col)
-        print(num)
-    #for pin_flag in mcp.int_flag:
-    #    print("Interrupt connected to Pin: {}".format(port))
-    #    print("Pin number: {} changed to: {}".format(pin_flag, pins[pin_flag].value))
+    #row = pins[mcp.int_flag[0]]
+    #if not row.value:
+    #    print("Release")
+    #else:
+    #    col = pins[mcp.int_flag[1]]
+    #    if row == 3:
+    #        num = handle_bottom_row(col)
+    #    else:
+    #        num = (row - 4) * 3 + (3 - col)
+    #    print(num)
+    for pin_flag in mcp.int_flag:
+        print("Interrupt connected to Pin: {}".format(port))
+        print("Pin number: {} changed to: {}".format(pin_flag, pins[pin_flag].value))
     mcp.clear_ints()
     sleep(0.1)
 
