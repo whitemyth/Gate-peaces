@@ -37,7 +37,8 @@ class Gate:
         keypad = KeypadI2C()
         keypad.set_lcd(lcd)
         
-        db = Database()
+        db = ClientDatabase()
+        db.add("Chief", "1234", "Testing")
         #uncoment above later
 
         lcd.awake()
@@ -224,12 +225,25 @@ class GateMonitor:
 
 
 class ClientDatabase:
+
     def __init__(self):
         self.db = sqlite3.connect("accessCodes.db")
+        
+    def check_code(self, code):
+        #check that the code is in the db, and return the associated name
+        self.db.execute(
+            """SELECT * FROM codes WHERE client_code=?""",
+            code
+        )
+        results = cursor.fetchall()
+        print("Got", len(results), "result(s):")
+        print(results)
 
     def add(self, name, code, restriction):
-        self.db.execute('''INSERT INTO codes (client_name, client_code, client_restrictions)
-            VALUES(?,?,?)''', (name, code, restriction))
+        self.db.execute(
+            '''INSERT INTO codes (client_name, client_code, client_restrictions) VALUES(?,?,?)''', 
+            (name, code, restriction)
+        )
 
     def delete(self, name):
         self.db.execute('''DELETE FROM codes WHERE client_name=?''', name)
