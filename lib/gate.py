@@ -298,18 +298,19 @@ class KeypadI2C:
             self.buffer += str(num)
             self.lcd.display_message(self.buffer, duration=0, clear=False)
             if len(self.buffer) == 4:
+                db = ClientDatabase()
                 print("send code")
-                self.db.check_code(self.buffer)
+                db.check_code(self.buffer)
                 self.buffer = ""
                 #self.lcd.valid_code_lcd()
+                db.db.close()
+                del db
         self.mcp.clear_ints()
         sleep(0.1)
 
     def __init__(self):
         print("setting up keypad...")
         self.buffer = ""
-        
-        self.db = ClientDatabase()
         
         self.i2c = busio.I2C(board.SCL, board.SDA)
         self.mcp = MCP23017(self.i2c, address=0x21)
