@@ -303,7 +303,7 @@ class KeypadI2C:
             self.lcd.display_message(self.buffer, duration=0, clear=False)
             if len(self.buffer) == 4:
                 print("send code")
-                db.check_code(self.buffer)
+                self.db.check_code(self.buffer)
                 self.buffer = ""
                 #self.lcd.valid_code_lcd()
         self.mcp.clear_ints()
