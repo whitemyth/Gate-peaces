@@ -5,7 +5,7 @@ import busio
 from digitalio import Direction, Pull
 from RPi import GPIO
 from adafruit_mcp230xx.mcp23017 import MCP23017
-import smbus2
+import smbus
 
 i2c = busio.I2C(board.SCL, board.SDA)
 
@@ -21,9 +21,8 @@ for pin in pins:
 
 mcp.interrupt_enable = 0xFFFF  # Enable Interrupts in all pins
 
-mcp.interrupt_configuration = 0xFFFF  # interrupt on any change
-mcp.default_value = 0x0000 #look for changes from low to high
-mcp.io_control = 0x04 #0x44  # Interrupt as open drain and mirrored
+mcp.interrupt_configuration = 0x0000  # interrupt on any change
+mcp.io_control = 0x44  # Interrupt as open drain and mirrored
 mcp.clear_ints()  # Interrupts need to be cleared initially
 
 bus = smbus.SMBus(1)
@@ -31,12 +30,17 @@ bus = smbus.SMBus(1)
 def setup():
     GPIO.add_event_detect(interrupt, GPIO.FALLING, callback = print_interrupt, bouncetime=100)
 
+def decode_button_press(value):
+    a = value >> 4
+    b = value % 32
+    print(a,b)
+
 
 def print_interrupt(port):
     """Callback function to be called when an Interrupt occurs."""
-    print("calling interrupt function")
     sleep(0.1)
-    #output = bus.read_ic2_block_data(0x21, 0x01)
+    output = bus.read_i2c_block_data(0x21, 0x01)
+    print(decode_button_press(output[17]))
     #print("output:")
     #print(output)
     #for pin_flag in mcp.int_flag:
