@@ -230,7 +230,7 @@ class ClientDatabase:
         
     def check_code(self, code):
         #check that the code is in the db, and return the associated name
-        self.db.execute(
+        cursor = self.db.execute(
             """SELECT * FROM codes WHERE client_code=?""",
             (code, )
         )
