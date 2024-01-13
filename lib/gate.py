@@ -38,7 +38,7 @@ class Gate:
         keypad.set_lcd(lcd)
         
         db = ClientDatabase()
-        db.add("Chief", "1234", "Testing")
+        db.add("Chief", "1234")
         #uncoment above later
 
         lcd.awake()
@@ -239,10 +239,10 @@ class ClientDatabase:
         print("Got", len(results), "result(s):")
         print(results)
 
-    def add(self, name, code, restriction):
+    def add(self, name, code):
         self.db.execute(
-            '''INSERT INTO codes (client_name, client_code, client_restrictions) VALUES(?,?,?)''', 
-            (name, code, restriction)
+            '''INSERT INTO codes (client_name, client_code) VALUES(?,?)''', 
+            (name, code)
         )
 
     def delete(self, name):
