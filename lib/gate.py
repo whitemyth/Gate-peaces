@@ -87,15 +87,6 @@ class Gate:
         
         #testing loop
         
-        print("testing")
-        
-        sleep(10)
-        
-        print("done")
-        
-        GPIO.cleanup()
-        
-        
         try:
             print("When button is pressed you'll see a message")
             sleep(20)  # You could run your main while loop here.
@@ -352,7 +343,7 @@ class KeypadI2C:
         #if button == '1':
         #    print('horse pushed')
 
-        sys.exit()
+        #sys.exit()
 
     @staticmethod
     def set_lcd(new_lcd: Lcd):
