@@ -34,16 +34,16 @@ class Gate:
         #listen = GateMonitor()
         #keypad = Keypad()
         
-        #keypad = KeypadI2C()
-        ##keypad.set_lcd(lcd)
+        keypad = KeypadI2C()
+        keypad.set_lcd(lcd)
         
         #db = Database()
         #uncoment above later
 
         lcd.awake()
-        lcd.standby()
-        lcd.valid_code_lcd()
-        lcd.invalid_code()
+        #lcd.standby()
+        #lcd.valid_code_lcd()
+        #lcd.invalid_code()
 
         ##keypad.listen()
 
@@ -84,6 +84,14 @@ class Gate:
 
         # variable = Class
         # control.open()  calling a method
+        
+        #testing loop
+        try:
+            print("When button is pressed you'll see a message")
+            sleep(20)  # You could run your main while loop here.
+            print("Time's up. Finished!")
+        finally:
+            GPIO.cleanup()
 
         return 0
 
@@ -273,7 +281,11 @@ class KeypadI2C:
         if output[15] == 240:
             print("Release")
         else:
-            print(self.parse(output[13]))
+            num = self.parse(output[13])
+            print(num)
+            self.lcd.display_message(num)
+            sleep(1)
+            self.lcd.clear()
         self.mcp.clear_ints()
         sleep(0.1)
 
@@ -307,13 +319,6 @@ class KeypadI2C:
         GPIO.setup(interrupt, GPIO.IN, GPIO.PUD_UP)  # Set up Pi's pin as input, pull up
         
         GPIO.add_event_detect(interrupt, GPIO.FALLING, callback = self.button_press, bouncetime=200)
-        
-        try:
-            print("When button is pressed you'll see a message")
-            sleep(20)  # You could run your main while loop here.
-            print("Time's up. Finished!")
-        finally:
-            GPIO.cleanup()
     
         
         #self.GPIO_CHIP_1 = GPIO_CHIP(0x24, 1) # define and assign chip MCP23017_I2c (0= model, b rev2, or B+ 1= model b rev1)
