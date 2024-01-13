@@ -44,7 +44,10 @@ def print_interrupt(port):
     sleep(0.1)
     output = bus.read_i2c_block_data(0x21, 0x01)
     
-    print(int(np.log2(output[13])))
+    if output[15] == 240:
+        print("Release")
+    else:
+        print(int(np.log2(output[13])))
         
     #row = pins[mcp.int_flag[0]]
     #if not row.value:
