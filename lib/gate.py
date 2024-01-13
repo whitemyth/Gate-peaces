@@ -265,8 +265,6 @@ class KeypadI2C:
     c1 = 0
     c2 = 1
     c3 = 2
-    lcd = None
-    buffer = ''
     
     def parse(self, i):
         for idx in range(16):
@@ -284,13 +282,20 @@ class KeypadI2C:
         else:
             num = self.parse(output[13])
             print(num)
-            self.lcd.display_message(str(num), clear=True)
+            self.buffer += str(num)
+            self.lcd.display_message(self.buffer, duration=0, clear=False)
+            if len(self.buffer) == 4:
+                print("send code")
+                self.buffer = ""
+                self.lcd.valid_code_lcd()
+            
             #sleep(1)
         self.mcp.clear_ints()
         sleep(0.1)
 
     def __init__(self):
         print("setting up keypad...")
+        self.buffer = ""
         #self.device_address = 0x21
         #self.register = 0x01
         
