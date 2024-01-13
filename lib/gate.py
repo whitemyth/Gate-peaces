@@ -149,8 +149,8 @@ class Lcd:
         #self.lcd.message('Waking up.')
         #time.sleep(1)
 
-    def valid_code_lcd(self):
-        self.display_message("Welcome")
+    def valid_code_lcd(self, name):
+        self.display_message(f"Welcome\n{name}")
         #self.lcd.backlight(self.lcd.GREEN)
         #self.lcd.message('Welcome sir.')
         #time.sleep(1)
@@ -237,14 +237,18 @@ class ClientDatabase:
             (code, )
         )
         results = cursor.fetchall()
-        print("Got", len(results), "result(s):")
-        print(results)
+        if len(results) > 0:
+            #success
+            return results[0][0] #name
+        else:
+            return None
 
     def add(self, name, code):
         self.db.execute(
             '''INSERT INTO codes (client_name, client_code) VALUES(?,?)''', 
             (name, code)
         )
+        self.db.commit()
 
     def delete(self, name):
         self.db.execute('''DELETE FROM codes WHERE client_name=?''', name)
@@ -302,9 +306,12 @@ class KeypadI2C:
             if len(self.buffer) == 4:
                 db = ClientDatabase()
                 print("send code")
-                db.check_code(self.buffer)
+                name = db.check_code(self.buffer)
                 self.buffer = ""
-                #self.lcd.valid_code_lcd()
+                if name:
+                    self.lcd.valid_code_lcd(name)
+                else:
+                    self.lcd.invalid_code()
                 db.db.close()
                 del db
         self.mcp.clear_ints()
