@@ -236,7 +236,7 @@ class ClientDatabase:
     def check_code(self, code):
         #check that the code is in the db, and return the associated name
         cursor = self.db.execute(
-            """SELECT * FROM codes WHERE UserCode=?""",
+            """SELECT * FROM codes WHERE Code=?""",
             (code, )
         )
         results = cursor.fetchall()
@@ -267,7 +267,7 @@ class ClientDatabase:
         else:
             expiry_string = None
         self.db.execute(
-            '''INSERT INTO codes (UserName, UserCode, Expiration) VALUES(?,?)''', 
+            '''INSERT INTO codes (UserName, Code, Expiration) VALUES(?,?)''', 
             (name, code, expiry_string)
         )
         self.db.commit()
@@ -284,7 +284,7 @@ class ClientDatabase:
     #    self.db.execute('''UPDATE codes SET (client_code=?) WHERE client_name=?''', (new_code, name))
 
     def list(self):
-        cursor = self.db.execute('''SELECT UserName, UserCode, Expiration FROM codes''')
+        cursor = self.db.execute('''SELECT UserName, Code, Expiration FROM codes''')
         return cursor.fetchall()
 
 
