@@ -319,7 +319,7 @@ class KeypadI2C:
     def button_press(self, port):
         sleep(0.1)
         output = self.bus.read_i2c_block_data(0x21, 0x01)
-        if output[15] == 240:
+        if output[13] == 0:
             print("Release")
         else:
             num = self.parse(output[13])
