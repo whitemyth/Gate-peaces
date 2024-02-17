@@ -1,4 +1,7 @@
 import time
+from dateutil.parser import parse
+import datetime
+
 #from lib.Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
 import RPi.GPIO as GPIO
 #from lib.MCP23017_I2C import *
@@ -32,17 +35,17 @@ class Gate:
         #bot = JabberBot()
         #control = GateControl()
         #listen = GateMonitor()
-        #keypad = Keypad()
         
         keypad = KeypadI2C()
         keypad.set_lcd(lcd)
         
         db = ClientDatabase()
+        keypad.set_db(db)
         
-        db.add("Nanuk", "0123")
+        #db.add("Nanuk", "0123")
         #uncoment above later
 
-        lcd.awake()
+        #lcd.awake()
         #lcd.standby()
         #lcd.valid_code_lcd()
         #lcd.invalid_code()
@@ -233,35 +236,55 @@ class ClientDatabase:
     def check_code(self, code):
         #check that the code is in the db, and return the associated name
         cursor = self.db.execute(
-            """SELECT * FROM codes WHERE client_code=?""",
+            """SELECT * FROM codes WHERE UserCode=?""",
             (code, )
         )
         results = cursor.fetchall()
         if len(results) > 0:
-            #success
-            return results[0][0] #name
+            name = results[0][1]
+            expiry = results[0][-1]
+            if expiry:
+                exp_time = datetime.datetime.strptime(expiry, "%Y-%m-%d %H:%M:%S")
+                if exp_time > datetime.datetime.now():
+                    return name
+                else:
+                    #expired code
+                    return None
+            else:
+                #no expiration date, valid
+                return name
         else:
             return None
 
-    def add(self, name, code):
+    def add(self, name, code, expiry=None):
+        if expiry:
+            try:
+                #try to parse expiration date, and add time if needed
+                expiry_string = datetime.datetime.strftime(parse(expiry), "%Y-%m-%d %H:%M:%S")
+            except:
+                print("Bad datetime string")
+                raise
+        else:
+            expiry_string = None
         self.db.execute(
-            '''INSERT INTO codes (client_name, client_code) VALUES(?,?)''', 
-            (name, code)
+            '''INSERT INTO codes (UserName, UserCode, Expiration) VALUES(?,?)''', 
+            (name, code, expiry_string)
         )
         self.db.commit()
 
     def delete(self, name):
-        self.db.execute('''DELETE FROM codes WHERE client_name=?''', name)
+        self.db.execute('''DELETE FROM codes WHERE UserName=?''', name)
+        self.db.commit()
 
-    def edit(self, name, new_name, new_code, new_restriction):
-        self.db.execute('''UPDATE codes SET (client_name=?, client_code=?, client_restrictions=?)
-            WHERE client_name=?''', (new_name, new_code, new_restriction, name))
+    #def edit(self, name, new_name, new_code, new_restriction):
+    #    self.db.execute('''UPDATE codes SET (UserName=?, UserCode=?, client_restrictions=?)
+    #        WHERE client_name=?''', (new_name, new_code, new_restriction, name))
 
-    def change_code(self, name, new_code):
-        self.db.execute('''UPDATE codes SET (client_code=?) WHERE client_name=?''', (new_code, name))
+    #def change_code(self, name, new_code):
+    #    self.db.execute('''UPDATE codes SET (client_code=?) WHERE client_name=?''', (new_code, name))
 
     def list(self):
-        cursor = self.db.execute('''SELECT client_name, client_code, client_restrictions FROM codes''')
+        cursor = self.db.execute('''SELECT UserName, UserCode, Expiration FROM codes''')
         return cursor.fetchall()
 
 
