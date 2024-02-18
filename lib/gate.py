@@ -41,6 +41,11 @@ class Gate:
         self.keypad.set_lcd(self.lcd)
         self.keypad.set_db(self.db)
         
+        GPIO.setup(EXIT_PIN, GPIO.OUT, GPIO.PUD_DOWN)
+        GPIO.setup(HOLD_PIN, GPIO.OUT, GPIO.PUD_DOWN)
+        GPIO.setup(CYCLE_PIN, GPIO.OUT, GPIO.PUD_DOWN)
+        
+        
         self.gate_control = GateControl()
         
         self.telegram_bot = TelegramGateBot(self.config["DEFAULT"]["secret"], self.db, self.gate_control)
