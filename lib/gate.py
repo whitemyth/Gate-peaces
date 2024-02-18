@@ -146,6 +146,13 @@ class GateMonitor:
 
 class ClientDatabase:
 
+    #the actual event handling happens in separate threads, so we
+    # have to create new contexts for each event
+    # this smells -- we should split the gate control, 
+    # physical UI, and telegram UI into separate services/threads
+    # and expose each to a central control to allow for interactions
+    # and separation of responsibilities
+
     def __init__(self, db_path):
         self.db_path = db_path
         if os.path.isfile(db_path):
@@ -249,9 +256,6 @@ class KeypadI2C:
             self.buffer += str(num)
             self.lcd.display_message(self.buffer, duration=0, clear=False)
             if len(self.buffer) == 4:
-                #this is taking place in a separate interrupt thread
-                # so we can't pass in the main db context
-                # this really smells :<
                 print("send code")
                 name = self.db.check_code(self.buffer)
                 self.buffer = ""

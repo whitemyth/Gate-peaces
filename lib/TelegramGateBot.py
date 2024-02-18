@@ -10,6 +10,9 @@ EXPIRE_CODE_SUCCESS_TEMPLATE = "Successfully expired code for user {}"
 LIST_CODE_TEMPLATE = "{}:{} ({})"
 NO_CODES_FOUND_MESSAGE = "No codes found in database"
 GATE_OPENING_MESSAGE = "Gate is now opening..."
+GATE_HOLD_OPEN_MESSAGE = "Gate is holding open..."
+GATE_CYCLE_MESSAGE = "Gate is cycling..."
+GATE_CLOSE_MESSAGE = "Gate is closing..."
 
 class TelegramGateBot:
 
@@ -24,9 +27,9 @@ class TelegramGateBot:
         self.bot.register_message_handler(self.create_code, commands=["add"])
         self.bot.register_message_handler(self.expire_code, commands=["remove"])
         self.bot.register_message_handler(self.open_gate, commands=["open"])
-        #open
-        #hold open
-        #cycle
+        self.bot.register_message_handler(self.hold_open, commands=["hold"])
+        self.bot.register_message_handler(self.cycle_gate, commands=["cycle"])
+        self.bot.register_message_handler(self.close_gate, commands=["close"])
         
         command_list = telebot.types.BotCommand(command='list', description='List entries')
         command_add = telebot.types.BotCommand(command='add', description='Add new code')
@@ -34,12 +37,16 @@ class TelegramGateBot:
         command_open = telebot.types.BotCommand(command="open", description="Open gate")
         command_hold = telebot.types.BotCommand(command="hold", description="Hold gate open")
         command_cycle = telebot.types.BotCommand(command="cycle", description="Cycle gate")
+        command_close = telebot.types.BotCommand(command="close", description="Close gate")
         
         self.bot.set_my_commands([
                 command_list,
                 command_add,
                 command_expire,
-                command_open
+                command_open,
+                command_hold,
+                command_cycle,
+                command_close
             ]
         )
         self.bot.set_chat_menu_button(None, telebot.types.MenuButtonCommands('commands'))
@@ -56,10 +63,16 @@ class TelegramGateBot:
         self.bot.reply_to(message, GATE_OPENING_MESSAGE)
         
     def hold_open(self, message):
-        pass
+        self.gate_control.hold_open()
+        self.bot.reply_to(message, GATE_HOLD_OPEN_MESSAGE)
         
     def cycle_gate(self, message):
-        pass
+        self.gate_control.cycle()
+        self.bot.reply_to(message, GATE_CYCLE_MESSAGE)
+        
+    def close_gate(self, message):
+        self.gate_control.close()
+        self.bot.reply_to(message, GATE_CLOSE_MESSAGE)
 
     def create_code(self, message):
         try:
