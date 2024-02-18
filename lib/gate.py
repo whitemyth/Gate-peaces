@@ -232,16 +232,13 @@ class KeypadI2C:
                 #this is taking place in a separate interrupt thread
                 # so we can't pass in the main db context
                 # this really smells :<
-                db = ClientDatabase(self.db_path)
                 print("send code")
-                name = db.check_code(self.buffer)
+                name = self.db.check_code(self.buffer)
                 self.buffer = ""
                 if name:
                     self.lcd.valid_code_lcd(name)
                 else:
                     self.lcd.invalid_code()
-                db.db.close()
-                del db
         self.mcp.clear_ints()
         sleep(0.1)
 
