@@ -9,6 +9,7 @@ class TelegramGateBot:
     EXPIRE_CODE_GENERAL_FAILURE_TEMPLATE = "Failed to expire code -- user {} may not exist"
     EXPIRE_CODE_SUCCESS_TEMPLATE = "Successfully expired code for user {}"
     LIST_CODE_TEMPLATE = "{}:{} ({})"
+    NO_CODES_FOUND_MESSAGE = "No codes found in database"
 
 
     def __init__(self, secret, new_db):
@@ -17,7 +18,8 @@ class TelegramGateBot:
         self.bot = telebot.TeleBot(secret)
         
         self.bot.register_message_handler(self.echo_all, commands=["test"])
-        self.bot.register_message_handler(self.list_codes, commands=["list"])        
+        self.bot.register_message_handler(self.list_codes, commands=["list"])
+        self.bot.register_message_handler(self.create_code, commands=["create"])
         
     def start(self):
         self.bot.infinity_polling()
@@ -52,7 +54,7 @@ class TelegramGateBot:
             if len(parts) == 4:
                 expiration_date = parts[3]
             else:
-                expiration_date = "todo"
+                expiration_date = None
         except:
             self.bot.reply_to(message, CREATE_CODE_BAD_FORMAT)
             return
@@ -76,7 +78,10 @@ class TelegramGateBot:
 
     def list_codes(self, message):
         codes = self.get_info()
-        output = "\n".join([LIST_CODE_TEMPLATE.format(datum["name"], datum["code"], datum["expiry"]) for datum in codes])
+        if len(codes) == 0:
+            output = NO_CODES_FOUND_MESSAGE
+        else:
+            output = "\n".join([LIST_CODE_TEMPLATE.format(datum["name"], datum["code"], datum["expiry"]) for datum in codes])
         self.bot.reply_to(message, output)
 
     def echo_all(self, message):
