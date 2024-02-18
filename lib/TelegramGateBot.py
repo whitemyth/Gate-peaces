@@ -76,6 +76,7 @@ class TelegramGateBot:
 
     def list_codes(self, message):
         codes = self.get_info()
+        print(codes)
         if len(codes) == 0:
             output = NO_CODES_FOUND_MESSAGE
         else:
