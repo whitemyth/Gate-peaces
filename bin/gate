@@ -3,7 +3,7 @@ from lib.gate import Gate
 
 
 def main():
-    gate = Gate()
+    gate = Gate("/home/lost/botconfig/config.ini")
     return gate.run()
 
 if __name__ == '__main__':

@@ -2,10 +2,13 @@ import time
 from dateutil.parser import parse
 import datetime
 
+from .TelegramGateBot import TelegramGateBot
+
 #from lib.Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
 import RPi.GPIO as GPIO
 #from lib.MCP23017_I2C import *
 #from lib.MCP23017_I2C import MCP23017_I2C
+import configparser
 import sqlite3
 import sys
 import smbus
@@ -21,76 +24,29 @@ from digitalio import Direction, Pull
 from adafruit_mcp230xx.mcp23017 import MCP23017
 
 class Gate:
-    @staticmethod
-    def run():
-        print('hello world')
-
-        # This is where the main program flow will be.
-        # Ideally, every part that we could isolate into a single working piece should be wrapped into classes
-        # and methods that are easy to test.
-        # Easy to test means it should be a function/method that receives arguments and returns values that we can
-        # confirm true or false.
-
-        lcd = Lcd()
-        #bot = JabberBot()
-        #control = GateControl()
-        #listen = GateMonitor()
+    
+    def __init__(self, config_location):
+        self.config = configparser.ConfigParser()
+        self.config.read(config_location)
+        self.db_path = self.config["DEFAULT"]["dbpath"]
         
-        keypad = KeypadI2C()
-        keypad.set_lcd(lcd)
+        print(self.config)
         
-        db = ClientDatabase()
-        keypad.set_db(db)
+        return
         
-        #db.add("Nanuk", "0123")
-        #uncoment above later
-
-        #lcd.awake()
-        #lcd.standby()
-        #lcd.valid_code_lcd()
-        #lcd.invalid_code()
-
-        ##keypad.listen()
-
-        #keypad.cleanup()
-
-        #bot.listen()
-        #bot.notify()
-
-        #control.close()
-        #control.hold_open()
-        #control.open()
-
-        #listen.gate_is_closed()
-        #listen.gate_is_moving()
-        #listen.gate_is_open()
-
-        #keypad.press_key('1')
-        #keypad.press_key('2')
-        #keypad.press_key('3')
-        #keypad.press_key('4')
-        #keypad.press_key('5')
-        #keypad.press_key('6')
-        #keypad.press_key('7')
-        #keypad.press_key('8')
-        #keypad.press_key('9')
-        #keypad.press_key('0')
-        #keypad.press_key('*')
-        #keypad.press_key('#')
-
-        #db.access_code()
-        #db.add_code()
-        #db.remove_code()
-        #db.list_code()
-
-        # class
-        # method
-        # calls
-
-        # variable = Class
-        # control.open()  calling a method
+        self.lcd = Lcd()
+        self.keypad = KeypadI2C()
+        self.db = ClientDatabase(self.db_path)
         
-        #testing loop
+        self.keypad.set_lcd(self.lcd)
+        self.keypad.set_db(db)
+        
+        self.telegram_bot = TelegramGateBot(self.config["DEFAULT"]["secret"], self.db)
+        
+    def run(self):
+        print('Hello, Pony.')
+
+        
         
         try:
             print("When button is pressed you'll see a message")
@@ -104,21 +60,6 @@ class Gate:
     @staticmethod
     def display_message_method(message):
         print(message)
-        # LCD command
-
-        # logging in the bot
-        # change bot "online" status every 10 min to avoid logout
-        # get the status of the gate
-        # listen for change in status from gate
-        # initialize the keypad reader
-        # show this message on the display  "time(hh.mm) /n enter access code
-        # enter a loop
-        # check if there is a new message from jabber
-        # check if someone pressed a key, or entered a full code
-        # verify code if entered
-        # show LCD message "welcome(name)" / " Invalid Code"
-
-        # send notice through jabber bot of attempt, or correct entry of code
 
 
 class Lcd:
@@ -127,10 +68,7 @@ class Lcd:
         self.n_cols = n_cols
         self.n_rows = n_rows
         self.lcd = character_lcd.Character_LCD_RGB_I2C(i2c, self.n_cols, self.n_rows)
-        #self.lcd.color = [100,0,0] #TODO - adjustable?
         self.default_color = (0,0,100)
-        #self.lcd = Adafruit_CharLCDPlate()
-        #self.lcd.begin(16, 2)
         
     def display_message(self, msg, color=None, duration=1, clear=True):
         self.lcd.clear()
@@ -142,50 +80,18 @@ class Lcd:
 
     def standby(self):
         self.display_message("Enter code.", )
-        #self.lcd.backlight(self.lcd.BLUE)
-        #self.lcd.message('Enter Code.')
-        #time.sleep(1)
 
     def awake(self):
         self.display_message("Waking up...")
-        #self.lcd.backlight(self.lcd.YELLOW)
-        #self.lcd.message('Waking up.')
-        #time.sleep(1)
 
     def valid_code_lcd(self, name):
         self.display_message(f"Welcome\n{name}")
-        #self.lcd.backlight(self.lcd.GREEN)
-        #self.lcd.message('Welcome sir.')
-        #time.sleep(1)
-        #self.lcd.clear()
 
     def invalid_code(self):
         self.display_message("Invalid code")
-        #self.lcd.backlight(self.lcd.RED)
-        #self.lcd.message('Invalid code.')
-        #time.sleep(1)
-        #self.lcd.clear()
 
     def display(self, message):
         self.display_message(f"Code: {message}")
-        #self.lcd.clear()
-        #self.lcd.message('Code: ' + message)
-
-
-class JabberBot:
-    def listen(self):
-        pass
-
-    def notify(self):
-        pass
-        
-class TelegramBot:
-    
-    def listen(self):
-        pass
-        
-    def notify(self):
-        pass
 
 
 class GateControl:
@@ -228,10 +134,29 @@ class GateMonitor:
             self.state = self.GATE_CLOSING
 
 
+
 class ClientDatabase:
 
-    def __init__(self):
-        self.db = sqlite3.connect("accessCodes.db")
+    def __init__(self, db_path):
+        if os.path.isfile(db_path):
+            self.db = sqlite3.connect(db_path)
+        else:
+            #db doesn't exist yet -- do the initialization
+            self.db = sqlite3.connect(db_path)
+
+            #create new table
+            self.db.execute(
+                '''
+                    CREATE TABLE codes (
+                    UserID INTEGER PRIMARY KEY AUTOINCREMENT,
+                    UserName text,
+                    Code text UNIQUE,
+                    Expiration datetime
+                );
+                '''
+            )
+
+            self.db.commit()
         
     def check_code(self, code):
         #check that the code is in the db, and return the associated name
@@ -276,37 +201,11 @@ class ClientDatabase:
         self.db.execute('''DELETE FROM codes WHERE UserName=?''', name)
         self.db.commit()
 
-    #def edit(self, name, new_name, new_code, new_restriction):
-    #    self.db.execute('''UPDATE codes SET (UserName=?, UserCode=?, client_restrictions=?)
-    #        WHERE client_name=?''', (new_name, new_code, new_restriction, name))
-
-    #def change_code(self, name, new_code):
-    #    self.db.execute('''UPDATE codes SET (client_code=?) WHERE client_name=?''', (new_code, name))
-
     def list(self):
         cursor = self.db.execute('''SELECT UserName, Code, Expiration FROM codes''')
         return cursor.fetchall()
 
-
-# instantiate the class ClientDatabase, create an object of ClientDatabase, the object is called "client"
-# client = ClientDatabase()
-# client.add("Alex", 1234, "Staff")
-# client.delete("Alex")
-# client.edit("Alex", "Alex2", 4321, "Nobody")
-# user_list = client.list()
-# for row in user_list:
-#     print("name: " + row[0])
-#     print("code: " + row[1])
-#     print("restriction: " + row[2] + "\n")
-
 class KeypadI2C:
-    r1 = 3
-    r2 = 2
-    r3 = 1
-    r4 = 0
-    c1 = 0
-    c2 = 1
-    c3 = 2
     
     def parse(self, i):
         for idx in range(16):
