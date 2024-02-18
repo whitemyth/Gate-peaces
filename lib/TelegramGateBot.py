@@ -1,15 +1,16 @@
 import telebot
 import configparser
 
+HELP_MESSAGE = "TODO -- HELP MESSAGE"
+CREATE_CODE_BAD_FORMAT = "Wrong format -- user code optional_expiry"
+CREATE_CODE_SUCCESS_TEMPLATE = "Registering code {} for user {} with expiration date {}"
+EXPIRE_CODE_PARSE_FAILURE = "Failed to expire code -- enter the user name associated with the code to expire"
+EXPIRE_CODE_GENERAL_FAILURE_TEMPLATE = "Failed to expire code -- user {} may not exist"
+EXPIRE_CODE_SUCCESS_TEMPLATE = "Successfully expired code for user {}"
+LIST_CODE_TEMPLATE = "{}:{} ({})"
+NO_CODES_FOUND_MESSAGE = "No codes found in database"
+
 class TelegramGateBot:
-    HELP_MESSAGE = "TODO -- HELP MESSAGE"
-    CREATE_CODE_BAD_FORMAT = "Wrong format -- user code optional_expiry"
-    CREATE_CODE_SUCCESS_TEMPLATE = "Registering code {} for user {} with expiration date {}"
-    EXPIRE_CODE_PARSE_FAILURE = "Failed to expire code -- enter the user name associated with the code to expire"
-    EXPIRE_CODE_GENERAL_FAILURE_TEMPLATE = "Failed to expire code -- user {} may not exist"
-    EXPIRE_CODE_SUCCESS_TEMPLATE = "Successfully expired code for user {}"
-    LIST_CODE_TEMPLATE = "{}:{} ({})"
-    NO_CODES_FOUND_MESSAGE = "No codes found in database"
 
 
     def __init__(self, secret, new_db):
@@ -41,7 +42,7 @@ class TelegramGateBot:
     def help(self, message):
         self.bot.reply_to(message, HELP_MESSAGE)
 
-    def create_code(message):
+    def create_code(self, message):
         try:
             parts = message.text.split()
             command = parts[0] #discard
