@@ -72,8 +72,9 @@ class Lcd:
         self.n_rows = n_rows
         self.lcd = character_lcd.Character_LCD_RGB_I2C(i2c, self.n_cols, self.n_rows)
         self.default_color = (100,100,100)
+        self.lcd.color = self.default_color
         
-    def display_message(self, msg, color=None, duration=1, clear=True):
+    def display_message(self, msg, color=None, duration=5, clear=True):
         self.lcd.clear()
         self.lcd.color = color or self.default_color
         self.lcd.message = msg
@@ -141,6 +142,7 @@ class GateMonitor:
         #self.state = self.GATE_IS_CLOSED
         
     def exiting(self, port):
+        time.sleep(1)
         print("testing -- thing is exiting")
 
     def gate_is_open(self):
