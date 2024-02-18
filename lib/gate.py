@@ -199,7 +199,7 @@ class ClientDatabase:
 
     def delete(self, name):
         db = sqlite3.connect(self.db_path)
-        self.db.execute('''DELETE FROM codes WHERE UserName=?''', name)
+        self.db.execute('''DELETE FROM codes WHERE UserName=?''', (name,))
         db.commit()
         db.close()
 
