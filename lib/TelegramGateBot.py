@@ -25,6 +25,12 @@ class TelegramGateBot:
         #hold open
         #cycle
         
+        command_list = telebot.types.BotCommand(command='list', description='List entries')
+        command_add = telebot.types.BotCommand(command='add', description='Add new code')
+        command_expire = telebot.types.BotCommand(command='remove', description='Remove user')
+        self.bot.set_my_commands([command_list, command_add, command_expire])
+        self.bot.set_chat_menu_button(None, telebot.types.MenuButtonCommands('commands'))
+        
     def start(self):
         self.bot.infinity_polling()
 
@@ -64,7 +70,7 @@ class TelegramGateBot:
             self.db.delete(user)
         except:
             self.bot.reply_to(message, EXPIRE_CODE_GENERAL_FAILURE_TEMPLATE.format(user))
-            raise
+            return
         self.bot.reply_to(message, EXPIRE_CODE_SUCCESS_TEMPLATE.format(user))
 
     def list_codes(self, message):
