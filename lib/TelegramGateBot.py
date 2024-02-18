@@ -76,11 +76,10 @@ class TelegramGateBot:
 
     def list_codes(self, message):
         codes = self.get_info()
-        print(codes)
         if len(codes) == 0:
             output = NO_CODES_FOUND_MESSAGE
         else:
-            output = "\n".join([LIST_CODE_TEMPLATE.format(datum[1], datum[2], datum[3]) for datum in codes])
+            output = "\n".join([LIST_CODE_TEMPLATE.format(datum[0], datum[1], datum[2]) for datum in codes])
         self.bot.reply_to(message, output)
 
     def echo_all(self, message):
