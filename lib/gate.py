@@ -42,13 +42,9 @@ class Gate:
     def run(self):
         print('Hello, Pony.')
 
-        self.telegram_bot.start()
-        
         try:
-            print("When button is pressed you'll see a message")
-            sleep(20)  # You could run your main while loop here.
-            print("Time's up. Finished!")
-        finally:
+            self.telegram_bot.start()
+        except:
             GPIO.cleanup()
 
         return 0
@@ -224,16 +220,13 @@ class KeypadI2C:
             self.buffer += str(num)
             self.lcd.display_message(self.buffer, duration=0, clear=False)
             if len(self.buffer) == 4:
-                db = ClientDatabase()
                 print("send code")
-                name = db.check_code(self.buffer)
+                name = self.db.check_code(self.buffer)
                 self.buffer = ""
                 if name:
                     self.lcd.valid_code_lcd(name)
                 else:
                     self.lcd.invalid_code()
-                db.db.close()
-                del db
         self.mcp.clear_ints()
         sleep(0.1)
 
