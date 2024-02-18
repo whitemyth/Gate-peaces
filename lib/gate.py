@@ -40,7 +40,6 @@ class Gate:
         self.db_path = self.config["DEFAULT"]["dbpath"]
         
         self.lcd = Lcd()
-        self.lcd.display("ugh dammit")
         self.gate_control = GateControl()
         self.gate_monitor = GateMonitor()
         self.keypad = KeypadI2C(self.gate_control)
@@ -68,6 +67,7 @@ class Gate:
 class Lcd:
     def __init__(self, n_cols=16, n_rows=2):
         i2c = busio.I2C(board.SCL, board.SDA)
+        print("i2c", i2c)
         self.n_cols = n_cols
         self.n_rows = n_rows
         self.lcd = character_lcd.Character_LCD_RGB_I2C(i2c, self.n_cols, self.n_rows)
