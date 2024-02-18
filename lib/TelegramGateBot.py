@@ -60,7 +60,7 @@ class TelegramGateBot:
     def open_gate(self, message):
         print("running open_gate...")
         self.gate_control.open()
-        self.bot.reply_to(message, GATE_OPENING_MESSAGE)
+        #self.bot.reply_to(message, GATE_OPENING_MESSAGE)
         
     def hold_open(self, message):
         self.gate_control.hold_open()

@@ -27,6 +27,11 @@ EXIT_PIN = 7
 HOLD_PIN = 8
 CYCLE_PIN = 25
 
+ALARM_PIN = 17
+STATUS_PIN = 27
+EXITING_PIN = 22
+POSITION_PIN = 10
+
 class Gate:
     
     def __init__(self, config_location):
@@ -35,18 +40,13 @@ class Gate:
         self.db_path = self.config["DEFAULT"]["dbpath"]
         
         self.lcd = Lcd()
-        self.keypad = KeypadI2C()
+        self.gate_control = GateControl()
+        self.gate_monitor = GateMonitor()
+        self.keypad = KeypadI2C(self.gate_control)
         self.db = ClientDatabase(self.db_path)
         
         self.keypad.set_lcd(self.lcd)
         self.keypad.set_db(self.db)
-        
-        GPIO.setup(EXIT_PIN, GPIO.OUT)
-        GPIO.setup(HOLD_PIN, GPIO.OUT)
-        GPIO.setup(CYCLE_PIN, GPIO.OUT)
-        
-        
-        self.gate_control = GateControl()
         
         self.telegram_bot = TelegramGateBot(self.config["DEFAULT"]["secret"], self.db, self.gate_control)
         
@@ -98,6 +98,11 @@ class Lcd:
 
 class GateControl:
 
+    def __init__(self):
+        GPIO.setup(EXIT_PIN, GPIO.OUT)
+        GPIO.setup(HOLD_PIN, GPIO.OUT)
+        GPIO.setup(CYCLE_PIN, GPIO.OUT)
+
     def open(self):
         GPIO.output(EXIT_PIN, True)
         time.sleep(0.5)
@@ -119,6 +124,10 @@ class GateControl:
         GPIO.output(CYCLE_PIN, False)
 
 
+#is the gate...
+# - opening
+#  -- what caused it? ground loop exit, keypad, telegram
+
 class GateMonitor:
     GATE_IS_CLOSED = 0
     GATE_IS_OPEN = 1
@@ -126,7 +135,12 @@ class GateMonitor:
     GATE_OPENING = 3
 
     def __init__(self):
-        self.state = self.GATE_IS_CLOSED
+        GPIO.setup(EXITING_PIN, GPIO.IN, GPIO.PUD_DOWN)
+        GPIO.add_event_detect(PIN_EXITING, GPIO.FALLING, callback = self.exiting, bouncetime=500)
+        #self.state = self.GATE_IS_CLOSED
+        
+    def exiting(self, port):
+        print("testing -- thing is exiting")
 
     def gate_is_open(self):
         if GPIO.input(29, True):
@@ -261,13 +275,16 @@ class KeypadI2C:
                 self.buffer = ""
                 if name:
                     self.lcd.valid_code_lcd(name)
+                    self.current_user = name
+                    self.gate_control.open()
                 else:
                     self.lcd.invalid_code()
         self.mcp.clear_ints()
         sleep(0.1)
 
-    def __init__(self):
+    def __init__(self, gate_control):
         print("setting up keypad...")
+        self.gate_control = gate_control
         self.buffer = ""
         
         self.i2c = busio.I2C(board.SCL, board.SDA)
