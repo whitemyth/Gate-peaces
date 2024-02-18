@@ -62,7 +62,7 @@ class TelegramGateBot:
             return
         self.store_code(user, code, expiration_date)
             
-        bot.reply_to(message, CREATE_CODE_SUCCESS_TEMPLATE.format(code, user, expiration_date))
+        self.bot.reply_to(message, CREATE_CODE_SUCCESS_TEMPLATE.format(code, user, expiration_date))
 
     def expire_code(self, message):
         try:
@@ -70,13 +70,13 @@ class TelegramGateBot:
             command = parts[0]
             user = parts[1]
         except:
-            bot.reply_to(message, EXPIRE_CODE_PARSE_FAILURE)
+            self.bot.reply_to(message, EXPIRE_CODE_PARSE_FAILURE)
             return
         try:
             expire_code(user)
         except:
-            bot.reply_to(message, EXPIRE_CODE_GENERAL_FAILURE_TEMPLATE.format(user))
-        bot.reply_to(message, EXPIRE_CODE_SUCCESS_TEMPLATE.format(user))
+            self.bot.reply_to(message, EXPIRE_CODE_GENERAL_FAILURE_TEMPLATE.format(user))
+        self.bot.reply_to(message, EXPIRE_CODE_SUCCESS_TEMPLATE.format(user))
 
     def list_codes(self, message):
         codes = self.get_info()
