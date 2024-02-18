@@ -33,7 +33,7 @@ class TelegramGateBot:
         self.db.delete(user)
         
     def get_info(self):
-        return results
+        return self.db.list()
 
 
     def help(self, message):
