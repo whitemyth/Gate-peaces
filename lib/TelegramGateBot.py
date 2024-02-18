@@ -25,10 +25,10 @@ class TelegramGateBot:
     def store_code(self, user, code, expiration_date):
         self.db.add(user, code, expiration_date)
 
-    def expire_code(user):
+    def expire_code(self, user):
         self.db.delete(user)
         
-    def get_info():
+    def get_info(self):
         results = []
         for result in self.db.list():
             current = {k: v for k,v in zip(self.fields, result)}
@@ -36,7 +36,7 @@ class TelegramGateBot:
         return results
 
 
-    def help(message):
+    def help(self, message):
         self.bot.reply_to(message, HELP_MESSAGE)
 
     def create_code(message):
@@ -75,8 +75,8 @@ class TelegramGateBot:
         bot.reply_to(message, EXPIRE_CODE_SUCCESS_TEMPLATE.format(user))
 
     def list_codes(self, message):
-        codes = get_info()
-        output = "\n".join([LIST_CODE_TEMPLATE.format(datum["user"], datum["code"], datum["expiration_date"]) for datum in get_info()])
+        codes = self.get_info()
+        output = "\n".join([LIST_CODE_TEMPLATE.format(datum["name"], datum["code"], datum["expiry"]) for datum in get_info()])
         self.bot.reply_to(message, output)
 
     def echo_all(self, message):
