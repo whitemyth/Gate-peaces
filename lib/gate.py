@@ -35,7 +35,7 @@ class Gate:
         self.db = ClientDatabase(self.db_path)
         
         self.keypad.set_lcd(self.lcd)
-        self.keypad.set_db(db)
+        self.keypad.set_db(self.db)
         
         self.telegram_bot = TelegramGateBot(self.config["DEFAULT"]["secret"], self.db)
         
