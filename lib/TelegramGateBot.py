@@ -111,6 +111,7 @@ class TelegramGateBot:
         self.bot.reply_to(message, EXPIRE_CODE_SUCCESS_TEMPLATE.format(user))
 
     def list_codes(self, message):
+        print(message.chat.id)
         codes = self.db.list()
         if len(codes) == 0:
             output = NO_CODES_FOUND_MESSAGE

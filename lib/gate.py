@@ -142,6 +142,7 @@ class GateMonitor:
         #self.state = self.GATE_IS_CLOSED
         
     def exiting(self, port):
+        #self.telegram_bot.
         print("testing -- thing is exiting")
 
     def gate_is_open(self):
