@@ -33,10 +33,6 @@ class TelegramGateBot:
         self.db.delete(user)
         
     def get_info(self):
-        results = []
-        for result in self.db.list():
-            current = {k: v for k,v in zip(self.fields, result)}
-            results.append(current)
         return results
 
 
@@ -83,7 +79,7 @@ class TelegramGateBot:
         if len(codes) == 0:
             output = NO_CODES_FOUND_MESSAGE
         else:
-            output = "\n".join([LIST_CODE_TEMPLATE.format(datum["name"], datum["code"], datum["expiry"]) for datum in codes])
+            output = "\n".join([LIST_CODE_TEMPLATE.format(datum[1], datum[2], datum[3]) for datum in codes])
         self.bot.reply_to(message, output)
 
     def echo_all(self, message):
