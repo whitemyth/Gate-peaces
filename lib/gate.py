@@ -136,7 +136,7 @@ class GateMonitor:
 
     def __init__(self):
         GPIO.setup(EXITING_PIN, GPIO.IN, GPIO.PUD_DOWN)
-        GPIO.add_event_detect(PIN_EXITING, GPIO.FALLING, callback = self.exiting, bouncetime=500)
+        GPIO.add_event_detect(EXITING_PIN, GPIO.FALLING, callback = self.exiting, bouncetime=500)
         #self.state = self.GATE_IS_CLOSED
         
     def exiting(self, port):
