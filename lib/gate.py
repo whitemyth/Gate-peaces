@@ -30,10 +30,6 @@ class Gate:
         self.config.read(config_location)
         self.db_path = self.config["DEFAULT"]["dbpath"]
         
-        print(self.config)
-        
-        return
-        
         self.lcd = Lcd()
         self.keypad = KeypadI2C()
         self.db = ClientDatabase(self.db_path)
@@ -139,8 +135,10 @@ class ClientDatabase:
 
     def __init__(self, db_path):
         if os.path.isfile(db_path):
+            print("Connecting to existing database...")
             self.db = sqlite3.connect(db_path)
         else:
+            print(f"Creating new database at {db_path}")
             #db doesn't exist yet -- do the initialization
             self.db = sqlite3.connect(db_path)
 
