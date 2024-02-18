@@ -40,6 +40,7 @@ class Gate:
         self.db_path = self.config["DEFAULT"]["dbpath"]
         
         self.lcd = Lcd()
+        self.lcd.display("ugh dammit")
         self.gate_control = GateControl()
         self.gate_monitor = GateMonitor()
         self.keypad = KeypadI2C(self.gate_control)
