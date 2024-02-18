@@ -35,7 +35,7 @@ class Gate:
         self.db = ClientDatabase(self.db_path)
         
         self.keypad.set_lcd(self.lcd)
-        self.keypad.set_db_path(self.db_path)
+        self.keypad.set_db(self.db)
         
         self.telegram_bot = TelegramGateBot(self.config["DEFAULT"]["secret"], self.db)
         
@@ -130,16 +130,16 @@ class GateMonitor:
 class ClientDatabase:
 
     def __init__(self, db_path):
+        self.db_path = db_path
         if os.path.isfile(db_path):
-            print("Connecting to existing database...")
-            self.db = sqlite3.connect(db_path)
+            pass
         else:
             print(f"Creating new database at {db_path}")
             #db doesn't exist yet -- do the initialization
-            self.db = sqlite3.connect(db_path)
+            db = sqlite3.connect(self.db_path)
 
             #create new table
-            self.db.execute(
+            db.execute(
                 '''
                     CREATE TABLE codes (
                     UserID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -150,15 +150,19 @@ class ClientDatabase:
                 '''
             )
 
-            self.db.commit()
+            db.commit()
+            db.close()
         
     def check_code(self, code):
         #check that the code is in the db, and return the associated name
-        cursor = self.db.execute(
+        db = sqlite3.connect(self.db_path)
+        cursor = db.execute(
             """SELECT * FROM codes WHERE Code=?""",
             (code, )
         )
         results = cursor.fetchall()
+        db.close()
+        del db
         if len(results) > 0:
             name = results[0][1]
             expiry = results[0][-1]
@@ -185,19 +189,24 @@ class ClientDatabase:
                 raise
         else:
             expiry_string = None
-        self.db.execute(
+        db = sqlite3.connect(self.db_path)
+        db.execute(
             '''INSERT INTO codes (UserName, Code, Expiration) VALUES(?,?)''', 
             (name, code, expiry_string)
         )
-        self.db.commit()
+        db.commit()
+        db.close()
 
     def delete(self, name):
         self.db.execute('''DELETE FROM codes WHERE UserName=?''', name)
         self.db.commit()
 
     def list(self):
-        cursor = self.db.execute('''SELECT UserName, Code, Expiration FROM codes''')
-        return cursor.fetchall()
+        db = sqlite3.connect(self.db_path)
+        cursor = db.execute('''SELECT UserName, Code, Expiration FROM codes''')
+        results = cursor.fetchall()
+        db.close()
+        return results
 
 class KeypadI2C:
     
@@ -267,8 +276,8 @@ class KeypadI2C:
     def set_lcd(self, new_lcd):
         self.lcd = new_lcd
         
-    def set_db_path(self, db_path):
-        self.db_path = db_path
+    def set_db(self, new_db):
+        self.db = new_db
 
     def cleanup(self):
             GPIO.cleanup()
