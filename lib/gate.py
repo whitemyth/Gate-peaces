@@ -71,8 +71,8 @@ class Lcd:
         self.n_cols = n_cols
         self.n_rows = n_rows
         self.lcd = character_lcd.Character_LCD_RGB_I2C(i2c, self.n_cols, self.n_rows)
-        self.display_message("test")
         self.default_color = (0,0,100)
+        self.display_message("test")
         
     def display_message(self, msg, color=None, duration=1, clear=True):
         self.lcd.clear()
