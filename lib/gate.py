@@ -225,7 +225,7 @@ class KeypadI2C:
                 # this really smells :<
                 db = ClientDatabase(self.db_path)
                 print("send code")
-                name = self.db.check_code(self.buffer)
+                name = db.check_code(self.buffer)
                 self.buffer = ""
                 if name:
                     self.lcd.valid_code_lcd(name)
