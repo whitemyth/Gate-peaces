@@ -23,9 +23,9 @@ from time import sleep
 from digitalio import Direction, Pull
 from adafruit_mcp230xx.mcp23017 import MCP23017
 
-EXIT_PIN = 17
-HOLD_PIN = 15
-CYCLE_PIN = 14
+EXIT_PIN = 7
+HOLD_PIN = 8
+CYCLE_PIN = 25
 
 class Gate:
     
