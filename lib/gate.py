@@ -220,6 +220,10 @@ class KeypadI2C:
             self.buffer += str(num)
             self.lcd.display_message(self.buffer, duration=0, clear=False)
             if len(self.buffer) == 4:
+                #this is taking place in a separate interrupt thread
+                # so we can't pass in the main db context
+                # this really smells :<
+                db = ClientDatabase(self.db_path)
                 print("send code")
                 name = self.db.check_code(self.buffer)
                 self.buffer = ""
@@ -227,6 +231,8 @@ class KeypadI2C:
                     self.lcd.valid_code_lcd(name)
                 else:
                     self.lcd.invalid_code()
+                db.db.close()
+                del db
         self.mcp.clear_ints()
         sleep(0.1)
 
