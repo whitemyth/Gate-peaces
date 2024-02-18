@@ -40,7 +40,7 @@ class Gate:
         self.db_path = self.config["DEFAULT"]["dbpath"]
         
         self.lcd = Lcd()
-        self.lcd.message("test")
+        self.lcd.lcd.message("test")
         
         self.gate_control = GateControl()
         self.gate_monitor = GateMonitor()
