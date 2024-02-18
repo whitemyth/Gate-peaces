@@ -35,7 +35,7 @@ class Gate:
         self.db = ClientDatabase(self.db_path)
         
         self.keypad.set_lcd(self.lcd)
-        self.keypad.set_db(self.db)
+        self.keypad.set_db_path(self.db_path)
         
         self.telegram_bot = TelegramGateBot(self.config["DEFAULT"]["secret"], self.db)
         
@@ -267,8 +267,8 @@ class KeypadI2C:
     def set_lcd(self, new_lcd):
         self.lcd = new_lcd
         
-    def set_db(self, new_db):
-        self.db = new_db
+    def set_db_path(self, db_path):
+        self.db_path = db_path
 
     def cleanup(self):
             GPIO.cleanup()
