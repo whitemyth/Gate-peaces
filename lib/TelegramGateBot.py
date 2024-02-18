@@ -76,7 +76,7 @@ class TelegramGateBot:
 
     def list_codes(self, message):
         codes = self.get_info()
-        output = "\n".join([LIST_CODE_TEMPLATE.format(datum["name"], datum["code"], datum["expiry"]) for datum in get_info()])
+        output = "\n".join([LIST_CODE_TEMPLATE.format(datum["name"], datum["code"], datum["expiry"]) for datum in codes])
         self.bot.reply_to(message, output)
 
     def echo_all(self, message):
