@@ -64,7 +64,7 @@ class TelegramGateBot:
             self.db.delete(user)
         except:
             self.bot.reply_to(message, EXPIRE_CODE_GENERAL_FAILURE_TEMPLATE.format(user))
-            return
+            raise
         self.bot.reply_to(message, EXPIRE_CODE_SUCCESS_TEMPLATE.format(user))
 
     def list_codes(self, message):
