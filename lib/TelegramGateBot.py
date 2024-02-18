@@ -35,7 +35,13 @@ class TelegramGateBot:
         command_hold = telebot.types.BotCommand(command="hold", description="Hold gate open")
         command_cycle = telebot.types.BotCommand(command="cycle", description="Cycle gate")
         
-        self.bot.set_my_commands([command_list, command_add, command_expire])
+        self.bot.set_my_commands([
+                command_list,
+                command_add,
+                command_expire,
+                command_open
+            ]
+        )
         self.bot.set_chat_menu_button(None, telebot.types.MenuButtonCommands('commands'))
         
     def start(self):
