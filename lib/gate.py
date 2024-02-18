@@ -41,9 +41,9 @@ class Gate:
         self.keypad.set_lcd(self.lcd)
         self.keypad.set_db(self.db)
         
-        GPIO.setup(EXIT_PIN, GPIO.OUT, GPIO.PUD_DOWN)
-        GPIO.setup(HOLD_PIN, GPIO.OUT, GPIO.PUD_DOWN)
-        GPIO.setup(CYCLE_PIN, GPIO.OUT, GPIO.PUD_DOWN)
+        GPIO.setup(EXIT_PIN, GPIO.OUT)
+        GPIO.setup(HOLD_PIN, GPIO.OUT)
+        GPIO.setup(CYCLE_PIN, GPIO.OUT)
         
         
         self.gate_control = GateControl()
