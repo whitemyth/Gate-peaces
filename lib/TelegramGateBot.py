@@ -26,6 +26,7 @@ class TelegramGateBot:
         self.bot.infinity_polling()
 
     def store_code(self, user, code, expiration_date):
+        print("DEBUG", user, code, expiration_date)
         self.db.add(user, code, expiration_date)
 
     def expire_code(self, user):

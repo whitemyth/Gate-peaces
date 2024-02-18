@@ -191,7 +191,7 @@ class ClientDatabase:
             expiry_string = None
         db = sqlite3.connect(self.db_path)
         db.execute(
-            '''INSERT INTO codes (UserName, Code, Expiration) VALUES(?,?)''', 
+            '''INSERT INTO codes (UserName, Code, Expiration) VALUES(?,?,?)''', 
             (name, code, expiry_string)
         )
         db.commit()
