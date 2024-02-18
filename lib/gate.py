@@ -37,7 +37,9 @@ class Gate:
         self.keypad.set_lcd(self.lcd)
         self.keypad.set_db(self.db)
         
-        self.telegram_bot = TelegramGateBot(self.config["DEFAULT"]["secret"], self.db)
+        self.gate_control = GateControl()
+        
+        self.telegram_bot = TelegramGateBot(self.config["DEFAULT"]["secret"], self.db, self.gate_control)
         
     def run(self):
         print('Hello, Pony.')
@@ -52,7 +54,6 @@ class Gate:
     @staticmethod
     def display_message_method(message):
         print(message)
-
 
 class Lcd:
     def __init__(self, n_cols=16, n_rows=2):
@@ -87,19 +88,29 @@ class Lcd:
 
 
 class GateControl:
+    EXIT_PIN = 17
+    HOLD_PIN = 15
+    CYCLE_PIN = 14
+
     def open(self):
-        GPIO.output(27, True)
+        GPIO.output(EXIT_PIN, True)
         time.sleep(0.5)
-        GPIO.output(27, False)
+        GPIO.output(EXIT_PIN, False)
 
     def hold_open(self):
-        GPIO.output(27, True)
+        GPIO.output(HOLD_PIN, True)
+        self.open()
 
     def close(self):
-        GPIO.output(27, False)
-        GPIO.output(28, True)
+        GPIO.output(HOLD_PIN, False)
         time.sleep(0.5)
-        GPIO.output(28, False)
+        #self.open()
+        #self.cycle()
+        
+    def cycle(self):
+        GPIO.output(CYCLE_PIN, True)
+        time.sleep(0.5)
+        GPIO.output(CYCLE_PIN, False)
 
 
 class GateMonitor:
