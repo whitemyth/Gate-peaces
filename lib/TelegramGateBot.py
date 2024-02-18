@@ -18,23 +18,15 @@ class TelegramGateBot:
         self.db = new_db
         self.bot = telebot.TeleBot(secret)
         
-        self.bot.register_message_handler(self.echo_all, commands=["test"])
         self.bot.register_message_handler(self.list_codes, commands=["list"])
-        self.bot.register_message_handler(self.create_code, commands=["create"])
+        self.bot.register_message_handler(self.create_code, commands=["add"])
+        self.bot.register_message_handler(self.expire_code, commands=["remove"])
+        #open
+        #hold open
+        #cycle
         
     def start(self):
         self.bot.infinity_polling()
-
-    def store_code(self, user, code, expiration_date):
-        print("DEBUG", user, code, expiration_date)
-        self.db.add(user, code, expiration_date)
-
-    def expire_code(self, user):
-        self.db.delete(user)
-        
-    def get_info(self):
-        return self.db.list()
-
 
     def help(self, message):
         self.bot.reply_to(message, HELP_MESSAGE)
@@ -56,7 +48,7 @@ class TelegramGateBot:
         except:
             self.bot.reply_to(message, CREATE_CODE_BAD_FORMAT)
             return
-        self.store_code(user, code, expiration_date)
+        self.db.add(user, code, expiration_date)
             
         self.bot.reply_to(message, CREATE_CODE_SUCCESS_TEMPLATE.format(code, user, expiration_date))
 
@@ -69,19 +61,15 @@ class TelegramGateBot:
             self.bot.reply_to(message, EXPIRE_CODE_PARSE_FAILURE)
             return
         try:
-            expire_code(user)
+            self.db.delete(user)
         except:
             self.bot.reply_to(message, EXPIRE_CODE_GENERAL_FAILURE_TEMPLATE.format(user))
         self.bot.reply_to(message, EXPIRE_CODE_SUCCESS_TEMPLATE.format(user))
 
     def list_codes(self, message):
-        codes = self.get_info()
+        codes = self.db.list()
         if len(codes) == 0:
             output = NO_CODES_FOUND_MESSAGE
         else:
             output = "\n".join([LIST_CODE_TEMPLATE.format(datum[0], datum[1], datum[2]) for datum in codes])
         self.bot.reply_to(message, output)
-
-    def echo_all(self, message):
-        self.bot.reply_to(message, message.text)
-        
