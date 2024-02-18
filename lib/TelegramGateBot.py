@@ -17,8 +17,9 @@ class TelegramGateBot:
         self.bot = telebot.TeleBot(secret)
         
         self.bot.register_message_handler(self.echo_all, commands=["test"])
-        self.bot.register_message_handler(self.list_codes, commands=["list"])
+        self.bot.register_message_handler(self.list_codes, commands=["list"])        
         
+    def start(self):
         self.bot.infinity_polling()
 
     def store_code(self, user, code, expiration_date):

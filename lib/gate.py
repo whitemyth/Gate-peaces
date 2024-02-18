@@ -42,7 +42,7 @@ class Gate:
     def run(self):
         print('Hello, Pony.')
 
-        
+        self.telegram_bot.start()
         
         try:
             print("When button is pressed you'll see a message")
