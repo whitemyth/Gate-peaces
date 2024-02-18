@@ -1,7 +1,7 @@
 import time
 from dateutil.parser import parse
 import datetime
-
+import os
 from .TelegramGateBot import TelegramGateBot
 
 #from lib.Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
