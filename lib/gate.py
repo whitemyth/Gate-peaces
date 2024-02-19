@@ -302,13 +302,12 @@ class KeypadI2C:
             else:
                 num = -1
         else:
-            num = row * 3 + col
+            num = row * 3 + col + 1
         return num
         
     def button_press(self, port):
         sleep(0.1)
         output = self.bus.read_i2c_block_data(0x21, 0x01)
-        print(output)
         if output[15] == 0:
             print("Release")
         else:
