@@ -292,6 +292,7 @@ class KeypadI2C:
         if output[13] == 0:
             print("Release")
         else:
+            print(output)
             num = self.parse(output[13])
             print(num)
             self.buffer += str(num)
