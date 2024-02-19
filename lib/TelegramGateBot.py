@@ -43,7 +43,7 @@ class TelegramGateBot:
         command_close = telebot.types.BotCommand(command="close", description="Close gate")
         
         self.bot.set_my_commands([
-                command_start,
+                #command_start,
                 command_list,
                 command_add,
                 command_expire,
