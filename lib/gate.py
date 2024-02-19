@@ -292,6 +292,8 @@ class KeypadI2C:
             if temp:
                 row = idx
                 break
+                
+        print(row, col)
         
         if row == 3:
             if col == 1:
