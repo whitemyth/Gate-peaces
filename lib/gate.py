@@ -32,24 +32,35 @@ STATUS_PIN = 27
 EXITING_PIN = 22
 POSITION_PIN = 10
 
+#TODO - this whole thing needs to be rewritten
+# to use loose coupling rather than the mess
+# that I've created.
+
 class Gate:
     
     def __init__(self, config_location):
         self.config = configparser.ConfigParser()
         self.config.read(config_location)
         self.db_path = self.config["DEFAULT"]["dbpath"]
+        self.chat_id = self.config["DEFAULT"]["chat_id"]
         
         self.lcd = Lcd()
         
         self.gate_control = GateControl()
-        self.gate_monitor = GateMonitor()
         self.keypad = KeypadI2C(self.gate_control)
         self.db = ClientDatabase(self.db_path)
         
         self.keypad.set_lcd(self.lcd)
         self.keypad.set_db(self.db)
         
-        self.telegram_bot = TelegramGateBot(self.config["DEFAULT"]["secret"], self.db, self.gate_control)
+        self.telegram_bot = TelegramGateBot(
+            self.config["DEFAULT"]["secret"]
+            self.db,
+            self.gate_control
+        )
+        
+        self.gate_monitor = GateMonitor(self.chat_id, self.telegram_bot)
+
         
     def run(self):
         print('Hello, Pony.')
@@ -136,14 +147,16 @@ class GateMonitor:
     GATE_CLOSING = 2
     GATE_OPENING = 3
 
-    def __init__(self):
+    def __init__(self, chat_id, telegram_bot):
+        self.telegram_bot = telegram_bot
+        self.chat_id = chat_id
         GPIO.setup(EXITING_PIN, GPIO.IN, GPIO.PUD_DOWN)
         GPIO.add_event_detect(EXITING_PIN, GPIO.RISING, callback = self.exiting, bouncetime=500)
         #self.state = self.GATE_IS_CLOSED
         
     def exiting(self, port):
-        #self.telegram_bot.
-        print("testing -- thing is exiting")
+        self.telegram_bot.send_message(self.chat_id, "TESTING  MESSAGE")
+        #print("testing -- thing is exiting")
 
     def gate_is_open(self):
         if GPIO.input(29, True):

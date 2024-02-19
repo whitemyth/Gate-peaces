@@ -21,8 +21,10 @@ class TelegramGateBot:
         self.fields = "id name code expiry".split()
         self.db = new_db
         self.gate_control = gate_control
+        self.config_location = config_location
         self.bot = telebot.TeleBot(secret)
         
+        #self.bot.register_message_handler(self.start_bot, commands=["start"])
         self.bot.register_message_handler(self.list_codes, commands=["list"])
         self.bot.register_message_handler(self.create_code, commands=["add"])
         self.bot.register_message_handler(self.expire_code, commands=["remove"])
@@ -31,6 +33,7 @@ class TelegramGateBot:
         self.bot.register_message_handler(self.cycle_gate, commands=["cycle"])
         self.bot.register_message_handler(self.close_gate, commands=["close"])
         
+        #command_start = telebot.types.BotCommand(command='start', description='Start bot and sync with the server')
         command_list = telebot.types.BotCommand(command='list', description='List entries')
         command_add = telebot.types.BotCommand(command='add', description='Add new code')
         command_expire = telebot.types.BotCommand(command='remove', description='Remove user')
@@ -40,6 +43,7 @@ class TelegramGateBot:
         command_close = telebot.types.BotCommand(command="close", description="Close gate")
         
         self.bot.set_my_commands([
+                command_start,
                 command_list,
                 command_add,
                 command_expire,
@@ -56,6 +60,13 @@ class TelegramGateBot:
 
     def help(self, message):
         self.bot.reply_to(message, HELP_MESSAGE)
+        
+    def start_bot(self, message):
+        #this is godawful -- the gatebot shouldn't know about the config file :<
+        chat_id = message.chat.id
+        self.config["DEFAULT"]["chat_id"] = chat_id
+        with open(self.config_location, 'w') as configfile:
+            config.write(configfile)
         
     def open_gate(self, message):
         print("running open_gate...")
