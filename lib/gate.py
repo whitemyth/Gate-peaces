@@ -42,7 +42,7 @@ class Gate:
         self.config = configparser.ConfigParser()
         self.config.read(config_location)
         self.db_path = self.config["DEFAULT"]["dbpath"]
-        self.chat_id = self.config["DEFAULT"]["chat_id"]
+        self.chat_id = self.config["DEFAULT"]["chatid"]
         
         self.lcd = Lcd()
         
