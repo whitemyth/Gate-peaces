@@ -56,10 +56,11 @@ class Gate:
         self.telegram_bot = TelegramGateBot(
             self.config["DEFAULT"]["secret"],
             self.db,
-            self.gate_control
+            self.gate_control,
+            self.chat_id
         )
         
-        self.gate_monitor = GateMonitor(self.chat_id, self.telegram_bot)
+        self.gate_monitor = GateMonitor(self.telegram_bot)
 
         
     def run(self):
@@ -147,15 +148,14 @@ class GateMonitor:
     GATE_CLOSING = 2
     GATE_OPENING = 3
 
-    def __init__(self, chat_id, telegram_bot):
+    def __init__(self, telegram_bot):
         self.telegram_bot = telegram_bot
-        self.chat_id = chat_id
         GPIO.setup(EXITING_PIN, GPIO.IN, GPIO.PUD_DOWN)
         GPIO.add_event_detect(EXITING_PIN, GPIO.RISING, callback = self.exiting, bouncetime=500)
         #self.state = self.GATE_IS_CLOSED
         
     def exiting(self, port):
-        self.telegram_bot.send_message(self.chat_id, "TESTING  MESSAGE")
+        self.telegram_bot.send_message("TESTING  MESSAGE")
         #print("testing -- thing is exiting")
 
     def gate_is_open(self):

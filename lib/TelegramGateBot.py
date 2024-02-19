@@ -17,12 +17,13 @@ GATE_CLOSE_MESSAGE = "Gate is closing..."
 class TelegramGateBot:
 
 
-    def __init__(self, secret, new_db, gate_control):
+    def __init__(self, secret, new_db, gate_control, chat_id):
         self.fields = "id name code expiry".split()
         self.db = new_db
         self.gate_control = gate_control
         #self.config_location = config_location
         self.bot = telebot.TeleBot(secret)
+        self.chat_id = chat_id
         
         #self.bot.register_message_handler(self.start_bot, commands=["start"])
         self.bot.register_message_handler(self.list_codes, commands=["list"])
@@ -60,6 +61,9 @@ class TelegramGateBot:
 
     def help(self, message):
         self.bot.reply_to(message, HELP_MESSAGE)
+        
+    def send_message(self, message):
+        self.bot.send_message(self.chat_id, message)
         
     def start_bot(self, message):
         #this is godawful -- the gatebot shouldn't know about the config file :<
