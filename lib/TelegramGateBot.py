@@ -29,10 +29,13 @@ class TelegramGateBot:
         self.bot.register_message_handler(self.list_codes, commands=["list"])
         self.bot.register_message_handler(self.create_code, commands=["add"])
         self.bot.register_message_handler(self.expire_code, commands=["remove"])
+        
         self.bot.register_message_handler(self.open_gate, commands=["open"])
         self.bot.register_message_handler(self.hold_open, commands=["hold"])
         self.bot.register_message_handler(self.cycle_gate, commands=["cycle"])
         self.bot.register_message_handler(self.close_gate, commands=["close"])
+        
+        self.bot.register_message_handler(self.status, commands=["status"])
         
         #command_start = telebot.types.BotCommand(command='start', description='Start bot and sync with the server')
         command_list = telebot.types.BotCommand(command='list', description='List entries')
@@ -42,6 +45,8 @@ class TelegramGateBot:
         command_hold = telebot.types.BotCommand(command="hold", description="Hold gate open")
         command_cycle = telebot.types.BotCommand(command="cycle", description="Cycle gate")
         command_close = telebot.types.BotCommand(command="close", description="Close gate")
+        command_status = telebot.types.BotCommand(command="status", description="Check gate status")
+        
         
         self.bot.set_my_commands([
                 #command_start,
@@ -51,7 +56,8 @@ class TelegramGateBot:
                 command_open,
                 command_hold,
                 command_cycle,
-                command_close
+                command_close,
+                command_status
             ]
         )
         self.bot.set_chat_menu_button(None, telebot.types.MenuButtonCommands('commands'))
@@ -89,6 +95,11 @@ class TelegramGateBot:
     def close_gate(self, message):
         self.gate_control.close()
         self.bot.reply_to(message, GATE_CLOSE_MESSAGE)
+
+    def status(self, message):
+        status = self.gate_monitor.is_closed()
+        print(status)
+        self.bot.reply_to(message, "ionno")
 
     def create_code(self, message):
         try:

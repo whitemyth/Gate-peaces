@@ -27,10 +27,10 @@ EXIT_PIN = 7
 HOLD_PIN = 8
 CYCLE_PIN = 25
 
-ALARM_PIN = 17
-STATUS_PIN = 27
+#SPARE_PIN = 17
+IS_MOVING_PIN = 27 #white pulses 12 when gate is moving
 EXITING_PIN = 22
-POSITION_PIN = 10
+IS_CLOSED_PIN = 10 #Brown or orange?  12 volts means closed
 
 USER_KEYPAD_ACTIVITY = "{} opened the gate"
 GATE_OPENING_MESSAGE = "Gate was opened"
@@ -157,6 +157,7 @@ class GateMonitor:
         self.keypad = keypad
         self.telegram_bot = telegram_bot
         GPIO.setup(EXITING_PIN, GPIO.IN, GPIO.PUD_DOWN)
+        GPIO.setup(IS_CLOSED_PIN, GPIO.IN, GPIO.PUD_DOWN)
         GPIO.add_event_detect(EXITING_PIN, GPIO.RISING, callback = self.exiting, bouncetime=500)
         #self.state = self.GATE_IS_CLOSED
         
@@ -174,8 +175,9 @@ class GateMonitor:
             self.state = self.GATE_IS_OPEN
 
     def gate_is_closed(self):
-        if GPIO.input(17, True):
-            self.state = self.GATE_IS_CLOSED
+        value = GPIO.input(IS_CLOSED_PIN, True)
+        print(value)
+        return value
 
     def gate_is_moving(self):  # I took a stab at this one - for: gate is opening, or closing
         if GPIO.input(22, True) and self.state is self.GATE_IS_CLOSED:
