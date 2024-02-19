@@ -32,6 +32,9 @@ STATUS_PIN = 27
 EXITING_PIN = 22
 POSITION_PIN = 10
 
+USER_KEYPAD_ACTIVITY = "{} opened the gate"
+GATE_OPENING_MESSAGE = "Gate was opened"
+
 #TODO - this whole thing needs to be rewritten
 # to use loose coupling rather than the mess
 # that I've created.
@@ -60,7 +63,7 @@ class Gate:
             self.chat_id
         )
         
-        self.gate_monitor = GateMonitor(self.telegram_bot)
+        self.gate_monitor = GateMonitor(self.telegram_bot, self.keypad)
 
         
     def run(self):
@@ -142,20 +145,28 @@ class GateControl:
 # - opening
 #  -- what caused it? ground loop exit, keypad, telegram
 
+
+
 class GateMonitor:
     GATE_IS_CLOSED = 0
     GATE_IS_OPEN = 1
     GATE_CLOSING = 2
     GATE_OPENING = 3
 
-    def __init__(self, telegram_bot):
+    def __init__(self, telegram_bot, keypad):
+        self.keypad = keypad
         self.telegram_bot = telegram_bot
         GPIO.setup(EXITING_PIN, GPIO.IN, GPIO.PUD_DOWN)
         GPIO.add_event_detect(EXITING_PIN, GPIO.RISING, callback = self.exiting, bouncetime=500)
         #self.state = self.GATE_IS_CLOSED
         
     def exiting(self, port):
-        self.telegram_bot.send_message("TESTING  MESSAGE")
+        if self.keypad.current_user:
+            message = USER_KEYPAD_ACTIVITY.format(self.keypad.current_user)
+            self.keypad.current_user = None
+        else:
+            message = GATE_OPENING_MESSAGE
+        self.telegram_bot.send_message(message)
         #print("testing -- thing is exiting")
 
     def gate_is_open(self):
@@ -300,6 +311,7 @@ class KeypadI2C:
 
     def __init__(self, gate_control):
         print("setting up keypad...")
+        self.current_user = None
         self.gate_control = gate_control
         self.buffer = ""
         
