@@ -89,7 +89,7 @@ class Lcd:
         self.default_color = (100,100,100)
         self.lcd.color = self.default_color
         
-    def display_message(self, msg, color=None, duration=5, clear=True):
+    def display_message(self, msg, color=None, duration=1, clear=True):
         self.lcd.clear()
         self.lcd.color = color or self.default_color
         self.lcd.message = msg
@@ -289,10 +289,10 @@ class KeypadI2C:
     def button_press(self, port):
         sleep(0.1)
         output = self.bus.read_i2c_block_data(0x21, 0x01)
+        print(output)
         if output[13] == 0:
             print("Release")
         else:
-            print(output)
             num = self.parse(output[13])
             print(num)
             self.buffer += str(num)
