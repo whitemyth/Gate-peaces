@@ -279,23 +279,42 @@ class ClientDatabase:
 class KeypadI2C:
     
     def parse(self, i):
-        for idx in range(16):
+        row = 0
+        col = 0
+    
+        for idx in range(3):
             temp = i & 1
             if temp:
-                return idx
+                col = idx
             i = i >> 1
-        return None
+        for idx in range(4):
+            temp = i & 1
+            if temp:
+                row = idx
+                break
+        
+        if row == 3:
+            if col == 1:
+                num = 0
+            else:
+                num = -1
+        else:
+            num = row * 3 + col
+        return num
         
     def button_press(self, port):
         sleep(0.1)
         output = self.bus.read_i2c_block_data(0x21, 0x01)
         print(output)
-        if output[13] == 0:
+        if output[15] == 0:
             print("Release")
         else:
             num = self.parse(output[13])
             print(num)
-            self.buffer += str(num)
+            if num == -1:
+                self.buffer = ""
+            else:
+                self.buffer += str(num)
             self.lcd.display_message(self.buffer, duration=0, clear=False)
             if len(self.buffer) == 4:
                 print("send code")
